@@ -1,0 +1,77 @@
+{
+  "continent": [
+    {
+      "europe": [
+        {
+          "name": "germany",
+          "position": [
+            "4/2",
+            "4/3",
+            "4/4",
+            "5/3",
+            "5/4"
+          ],
+          "neighbours": [
+            "france"
+          ],
+          "capital": "true"
+        },
+        {
+          "name": "france",
+          "position": [
+            "2/2",
+            "2/3",
+            "3/2",
+            "3/3"
+          ],
+          "neighbours": [
+            "germany",
+            "spain"
+          ],
+          "capital": "false"
+        },
+        {
+          "name": "spain",
+          "position": [
+            "1/5",
+            "1/6",
+            "2/5",
+            "2/6"
+          ],
+          "neighbours": [
+            "france",
+            "sw1"
+          ],
+          "capital": "false"
+        }
+      ],
+      "africa": [
+        {
+          "name": "north-africa"
+          :
+        {
+          "position": [
+            "1/8",
+            "1/9",
+            "2/8",
+            "2/9",
+            "3/8"
+          ],
+          "neighbours": [
+            "sw1"
+          ],
+          "capital": "true"
+        }
+        }
+      ]
+    }
+  ],
+  "seaways": [
+    {
+      "name": "sw1"
+      "position": [
+        "2/7"
+      ]
+    }
+  ]
+}
