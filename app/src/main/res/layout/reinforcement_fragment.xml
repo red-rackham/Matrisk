@@ -130,6 +130,19 @@
             android:text="@string/cancel" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/TestFragmentChangeButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="goToNextFragment" />
+    </LinearLayout>
+
 
 </LinearLayout>
 

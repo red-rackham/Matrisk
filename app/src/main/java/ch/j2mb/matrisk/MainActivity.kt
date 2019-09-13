@@ -3,15 +3,21 @@ package ch.j2mb.matrisk
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Window
 import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
+        //requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+
         setContentView(R.layout.activity_main)
 
-        val onePlayerIntent = Intent(this, SinglePlayerActivity::class.java)
+        val onePlayerIntent = Intent(this, GameActivity::class.java)
         val multiPlayerIntent = Intent(this, MultiPlayerActivity::class.java)
         val profileIntent = Intent(this, ProfileActivity::class.java)
         val settingsIntent = Intent(this, SettingsActivity::class.java)

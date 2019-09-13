@@ -9,19 +9,27 @@
     <string name="map_editor">Map-Editor</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_single_player">SinglePlayerActivity</string>
+    <string name="troops_available">Troops available:</string>
+    <string name="plus">+</string>
+    <string name="target">Target:</string>
+    <string name="minus">-</string>
+    <string name="dispatch">Dispatch</string>
+    <string name="cancel">Cancel</string>
+    <string name="attack_from">Attack from:</string>
+    <string name="target_country">Target country:</string>
+    <string name="troops_left_in_attacking_country">Troops left in attacking country</string>
+    <string name="attacking_troops">Attacking troops:</string>
+    <string name="move_from">Move from:</string>
+    <string name="move_to">Move to:</string>
+    <string name="skip_step">Skip step</string>
+    <string name="select_country"><![CDATA[<select country>]]></string>
+    <string name="messages_header">Matrisk</string>
+    <string name="attachment_summary_off">Summary-Off</string>
+    <string name="attachment_summary_on">Summary_On</string>
+    <string name="attachment_title" />
+    <string name="sync_title" />
+    <string name="sync_header">Sync_header</string>
+    <string name="reply_title">Reply_title</string>
+    <string name="signature_title">Signature_title</string>
 </resources>

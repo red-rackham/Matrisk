@@ -7,7 +7,6 @@ import kotlin.random.Random.Default.nextInt
 
 class GameInitializer(val players: MutableList<Player>) {
 
-
     val listOfAs = listOf(
         Country("A11", 1, 1),
         Country("A12", 1, 2),
@@ -37,37 +36,53 @@ class GameInitializer(val players: MutableList<Player>) {
 
     val listOfContinents = listOf(continentA, continentB)
 
-    init{
 
+    init {
+        distributeCountries()
+
+        //randomize turn order via the players List<>
+        players.shuffle()
+        GameManager(players, listOfContinents)
+
+    }
+
+
+    private fun assignCountry(continent: Int, country: Int, player: Int) {
+        listOfContinents[continent].countries[country].owner = players[player]
+    }
+
+    //Distribute all countries available to players
+    private fun distributeCountries() {
         var totalNrOfCountries = 0
-        for(i in 0..listOfContinents.size)
+        for (i in 0..listOfContinents.size)
             totalNrOfCountries += listOfContinents[i].countries.size
 
         val minCountryPerPlayer = totalNrOfCountries / players.size
-        val moduloCountry = totalNrOfCountries % players.size
+
+        //When countries cannot be distributed evenly the leftovers will be distributed randomly to players
+        var moduloCountry = totalNrOfCountries % players.size
 
         var distributionList = mutableListOf(players.size)
 
-        for(i in 0..listOfContinents.size) {
-            for(j in 0..listOfContinents[i].countries.size) {
+        //Distribution loop
+        for (i in 0..listOfContinents.size) {
+            for (j in 0..listOfContinents[i].countries.size) {
                 var assigned = false
-                while(!assigned) {
+                while (!assigned) {
+                    //Pick random player from List
                     var player = nextInt(0, players.size)
+                    //Check if player has not reached max amount of assigned countries
                     if (distributionList[player] < minCountryPerPlayer + moduloCountry) {
                         assignCountry(i, j, player)
+                        //If a country from the modulo was assigned, reduce moduloCounty by one
+                        if (distributionList[player] >= minCountryPerPlayer) moduloCountry--
                         assigned = true
                     }
                 }
             }
         }
 
-
     }
-    private fun assignCountry(continent:Int, country:Int, player:Int) {
-        listOfContinents[continent].countries[country].owner = players[player]
-    }
-
-
 
 
 }

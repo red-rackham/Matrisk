@@ -6,11 +6,10 @@ import ch.j2mb.matrisk.gameplay.model.Player
 
 
 /*This class is the Game manager who handles all the logic, process and communication with the players*/
-class gameManager (var players: MutableList<Player>, var continents: List<Continent>){
+class GameManager(var players: MutableList<Player>, var continents: List<Continent>) {
 
-    var round:Int = 0
+    var round: Int = 0
     var gameOrder = mutableListOf<Player>()
-
 
 
     init {
@@ -22,16 +21,12 @@ class gameManager (var players: MutableList<Player>, var continents: List<Contin
         }
     }
 
-    private fun setGameSequence(players: MutableList<Player>){
+    private fun setGameSequence(players: MutableList<Player>) {
         var gameOrder: MutableList<Player>
 
         var rand = 0
 
     }
-
-
-
-
 
 
 }

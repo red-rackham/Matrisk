@@ -1,4 +1,6 @@
 package ch.j2mb.matrisk.gameplay.model
 
-class Continent {
+class Continent(val name:String, val countries:List<Country>) {
+
+
 }

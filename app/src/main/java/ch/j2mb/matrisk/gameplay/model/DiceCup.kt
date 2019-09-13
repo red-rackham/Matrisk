@@ -8,7 +8,7 @@ import kotlin.random.Random.Default.nextInt
 * It returns an 2D IntArray with the results in the IntArray dicesA and dicesB
 */
 
-class diceCup {
+class DiceCup {
 
     fun shake(a:Int, b:Int): Array<IntArray> {
         var dicesA: IntArray = intArrayOf(a)

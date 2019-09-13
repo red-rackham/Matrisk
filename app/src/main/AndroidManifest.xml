@@ -9,16 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".GameActivity"></activity>
         <activity android:name=".MultiPlayerActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".EditorActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".MultiplayerActivity" />
+        <activity android:name=".MultiPlayerActivity" />
         <activity
             android:name=".SinglePlayerActivity"
             android:label="@string/title_activity_single_player"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
