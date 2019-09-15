@@ -39,7 +39,7 @@ class ReinforcementFragment : Fragment() {
         }
 
         fragmentView.findViewById<Button>(R.id.abortButton).setOnClickListener {
-            listener.testToaster()
+            listener.testStuff()
         }
 
 
@@ -48,7 +48,7 @@ class ReinforcementFragment : Fragment() {
 
 
     interface ReinforcementInterface {
-        fun testToaster()
+        fun testStuff()
         fun getAttackFragment()
     }
 

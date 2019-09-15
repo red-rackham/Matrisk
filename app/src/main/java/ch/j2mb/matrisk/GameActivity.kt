@@ -62,6 +62,8 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
     val continentC = listOf(c11, c12, c13, c21, c22, c23, c31, c32, c33)
     val continentD = listOf(d11, d12, d13, d21, d22, d23, d31, d32, d33)
 
+    val continents = listOf(continentA, continentB, continentC, continentD)
+
 
 
 
@@ -135,8 +137,15 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
 
 
 
-    override fun testToaster() {
-        Toast.makeText(this@GameActivity, "Toaster clicked!!!!", Toast.LENGTH_LONG).show()
+    fun testToaster() {
+        //Toast.makeText(this@GameActivity, "Toaster clicked!!!!", Toast.LENGTH_LONG).show()
+    }
+
+    override fun testStuff() {
+
+        for(i in 0..continents)
+
+
     }
 
 
