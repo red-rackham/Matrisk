@@ -1,4 +1,4 @@
-package ch.j2mb.matrisk.gameplay.model
+package ch.j2mb.matrisk.gameplay.helper
 
 import kotlin.random.Random.Default.nextInt
 

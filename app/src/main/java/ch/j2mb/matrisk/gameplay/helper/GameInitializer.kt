@@ -1,11 +1,18 @@
-package ch.j2mb.matrisk.gameplay.controller
+package ch.j2mb.matrisk.gameplay.helper
 
+import android.content.Context
+import android.util.Log
+import ch.j2mb.matrisk.gameplay.controller.GameManager
 import ch.j2mb.matrisk.gameplay.model.Continent
+import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlin.random.Random.Default.nextInt
 
-class GameInitializer(val players: MutableList<Player>) {
+class GameInitializer(val players: MutableList<Player>, val initialGameState: String, var context: Context) {
+
+    /*
+    Legacy
 
     val listOfAs = listOf(
         Country("A11", null, 1, false),
@@ -57,29 +64,39 @@ class GameInitializer(val players: MutableList<Player>) {
 
     val continentA = Continent("A", listOfAs)
     val continentB = Continent("B", listOfBs)
-
     val listOfContinents = listOf(continentA, continentB)
+     */
 
+    lateinit var listOfContinents: ContinentList
 
     init {
+
+        //Get initial set of countries/continents
+        val jsonHandler = JsonHandler()
+        val tempList = jsonHandler.getCountriesFromGson(initialGameState, context)
+        if(tempList != null) {
+            listOfContinents = tempList
+        } else {
+            Log.e("Initalizer", "listOfContinents == 0 !!!")
+        }
+
         distributeCountries()
 
-        //randomize turn order via the players List<>
-        players.shuffle()
-        GameManager(players, listOfContinents)
+        //randomize turn order with the players List --> For testing disabled!!
+        //players.shuffle()
 
     }
 
 
     private fun assignCountry(continent: Int, country: Int, player: Int) {
-        listOfContinents[continent].countries[country].player = players[player].name
+        listOfContinents.continents[continent].countries[country].player = players[player].name
     }
 
     //Distribute all countries available to players
     private fun distributeCountries() {
         var totalNrOfCountries = 0
-        for (i in 0..listOfContinents.size)
-            totalNrOfCountries += listOfContinents[i].countries.size
+        for (continent in listOfContinents.continents)
+            totalNrOfCountries += continent.countries.size
 
         val minCountryPerPlayer = totalNrOfCountries / players.size
 
@@ -89,8 +106,8 @@ class GameInitializer(val players: MutableList<Player>) {
         var distributionList = mutableListOf(players.size)
 
         //Distribution loop
-        for (i in 0..listOfContinents.size) {
-            for (j in 0..listOfContinents[i].countries.size) {
+        for (i in listOfContinents.continents.indices) {
+            for (j in listOfContinents.continents[i].countries.indices) {
                 var assigned = false
                 while (!assigned) {
                     //Pick random player from List

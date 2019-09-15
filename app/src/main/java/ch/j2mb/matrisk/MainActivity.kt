@@ -9,15 +9,11 @@ import android.widget.Button
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
-        //requestWindowFeature(Window.FEATURE_NO_TITLE)
-
-
         setContentView(R.layout.activity_main)
 
-        val onePlayerIntent = Intent(this, GameActivity::class.java)
+        val gameActivityIntent = Intent(this, GameActivity::class.java)
+        val onePlayerIntent = Intent(this, TestActivity::class.java)
         val multiPlayerIntent = Intent(this, MultiPlayerActivity::class.java)
         val profileIntent = Intent(this, ProfileActivity::class.java)
         val settingsIntent = Intent(this, SettingsActivity::class.java)
@@ -32,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val aboutButton = findViewById<Button>(R.id.aboutButton)
 
         onePlayerButton.setOnClickListener {
-            startActivity(onePlayerIntent)
+            startActivity(gameActivityIntent)
         }
         multiPlayerButton.setOnClickListener {
             startActivity(multiPlayerIntent)
