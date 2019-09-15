@@ -23,7 +23,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/water19"
                 app:layout_constraintEnd_toStartOf="@+id/water18"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c2_3"
+                app:layout_constraintStart_toEndOf="@+id/c23"
                 app:layout_constraintTop_toBottomOf="@+id/water15" />
 
             <ImageButton
@@ -34,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/water20"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c3_3"
+                app:layout_constraintStart_toEndOf="@+id/c33"
                 app:layout_constraintTop_toBottomOf="@+id/water17" />
 
             <ImageButton
@@ -43,7 +43,7 @@
                 android:layout_height="0dp"
                 android:background="@drawable/water"
                 app:layout_constraintBottom_toTopOf="@+id/water20"
-                app:layout_constraintEnd_toStartOf="@+id/d2_1"
+                app:layout_constraintEnd_toStartOf="@+id/d21"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water17"
                 app:layout_constraintTop_toBottomOf="@+id/water16" />
@@ -54,13 +54,13 @@
                 android:layout_height="0dp"
                 android:background="@drawable/water"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/d3_1"
+                app:layout_constraintEnd_toStartOf="@+id/d31"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water19"
                 app:layout_constraintTop_toBottomOf="@+id/water18" />
 
             <Button
-                android:id="@+id/d3_2"
+                android:id="@+id/d32"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -73,13 +73,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/d3_3"
+                app:layout_constraintEnd_toStartOf="@+id/d33"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d3_1"
-                app:layout_constraintTop_toBottomOf="@+id/d2_2" />
+                app:layout_constraintStart_toEndOf="@+id/d31"
+                app:layout_constraintTop_toBottomOf="@+id/d22" />
 
             <Button
-                android:id="@+id/d3_3"
+                android:id="@+id/d33"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -94,11 +94,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d3_2"
-                app:layout_constraintTop_toBottomOf="@+id/d2_3" />
+                app:layout_constraintStart_toEndOf="@+id/d32"
+                app:layout_constraintTop_toBottomOf="@+id/d23" />
 
             <Button
-                android:id="@+id/d2_1"
+                android:id="@+id/d21"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -110,14 +110,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d3_1"
-                app:layout_constraintEnd_toStartOf="@+id/d2_2"
+                app:layout_constraintBottom_toTopOf="@+id/d31"
+                app:layout_constraintEnd_toStartOf="@+id/d22"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water18"
-                app:layout_constraintTop_toBottomOf="@+id/d1_1" />
+                app:layout_constraintTop_toBottomOf="@+id/d11" />
 
             <Button
-                android:id="@+id/d2_2"
+                android:id="@+id/d22"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -129,14 +129,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d3_2"
-                app:layout_constraintEnd_toStartOf="@+id/d2_3"
+                app:layout_constraintBottom_toTopOf="@+id/d32"
+                app:layout_constraintEnd_toStartOf="@+id/d23"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d2_1"
-                app:layout_constraintTop_toBottomOf="@+id/d1_2" />
+                app:layout_constraintStart_toEndOf="@+id/d21"
+                app:layout_constraintTop_toBottomOf="@+id/d12" />
 
             <Button
-                android:id="@+id/d2_3"
+                android:id="@+id/d23"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -148,14 +148,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d3_3"
+                app:layout_constraintBottom_toTopOf="@+id/d33"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d2_2"
-                app:layout_constraintTop_toBottomOf="@+id/d1_3" />
+                app:layout_constraintStart_toEndOf="@+id/d22"
+                app:layout_constraintTop_toBottomOf="@+id/d13" />
 
             <Button
-                android:id="@+id/d3_1"
+                android:id="@+id/d31"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -168,13 +168,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/d3_2"
+                app:layout_constraintEnd_toStartOf="@+id/d32"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water20"
-                app:layout_constraintTop_toBottomOf="@+id/d2_1" />
+                app:layout_constraintTop_toBottomOf="@+id/d21" />
 
             <Button
-                android:id="@+id/c3_3"
+                android:id="@+id/c33"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -189,11 +189,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/water19"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c3_2"
-                app:layout_constraintTop_toBottomOf="@+id/c2_3" />
+                app:layout_constraintStart_toEndOf="@+id/c32"
+                app:layout_constraintTop_toBottomOf="@+id/c23" />
 
             <Button
-                android:id="@+id/c3_1"
+                android:id="@+id/c31"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -206,13 +206,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/c3_2"
+                app:layout_constraintEnd_toStartOf="@+id/c32"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/c2_1" />
+                app:layout_constraintTop_toBottomOf="@+id/c21" />
 
             <Button
-                android:id="@+id/c3_2"
+                android:id="@+id/c32"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -225,13 +225,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/c3_3"
+                app:layout_constraintEnd_toStartOf="@+id/c33"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c3_1"
-                app:layout_constraintTop_toBottomOf="@+id/c2_2" />
+                app:layout_constraintStart_toEndOf="@+id/c31"
+                app:layout_constraintTop_toBottomOf="@+id/c22" />
 
             <Button
-                android:id="@+id/c1_1"
+                android:id="@+id/c11"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -243,14 +243,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c2_1"
-                app:layout_constraintEnd_toStartOf="@+id/c1_2"
+                app:layout_constraintBottom_toTopOf="@+id/c21"
+                app:layout_constraintEnd_toStartOf="@+id/c12"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/water7" />
 
             <Button
-                android:id="@+id/c2_1"
+                android:id="@+id/c21"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -262,14 +262,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c3_1"
-                app:layout_constraintEnd_toStartOf="@+id/c2_2"
+                app:layout_constraintBottom_toTopOf="@+id/c31"
+                app:layout_constraintEnd_toStartOf="@+id/c22"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/c1_1" />
+                app:layout_constraintTop_toBottomOf="@+id/c11" />
 
             <Button
-                android:id="@+id/c2_2"
+                android:id="@+id/c22"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -281,14 +281,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c3_2"
-                app:layout_constraintEnd_toStartOf="@+id/c2_3"
+                app:layout_constraintBottom_toTopOf="@+id/c32"
+                app:layout_constraintEnd_toStartOf="@+id/c23"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c2_1"
-                app:layout_constraintTop_toBottomOf="@+id/c1_2" />
+                app:layout_constraintStart_toEndOf="@+id/c21"
+                app:layout_constraintTop_toBottomOf="@+id/c12" />
 
             <Button
-                android:id="@+id/c2_3"
+                android:id="@+id/c23"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -300,14 +300,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c3_3"
+                app:layout_constraintBottom_toTopOf="@+id/c33"
                 app:layout_constraintEnd_toStartOf="@+id/water17"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c2_2"
-                app:layout_constraintTop_toBottomOf="@+id/c1_3" />
+                app:layout_constraintStart_toEndOf="@+id/c22"
+                app:layout_constraintTop_toBottomOf="@+id/c13" />
 
             <Button
-                android:id="@+id/c1_2"
+                android:id="@+id/c12"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -319,14 +319,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c2_2"
-                app:layout_constraintEnd_toStartOf="@+id/c1_3"
+                app:layout_constraintBottom_toTopOf="@+id/c22"
+                app:layout_constraintEnd_toStartOf="@+id/c13"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c1_1"
+                app:layout_constraintStart_toEndOf="@+id/c11"
                 app:layout_constraintTop_toBottomOf="@+id/water8" />
 
             <Button
-                android:id="@+id/c1_3"
+                android:id="@+id/c13"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -338,14 +338,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/c2_3"
+                app:layout_constraintBottom_toTopOf="@+id/c23"
                 app:layout_constraintEnd_toStartOf="@+id/water15"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c1_2"
+                app:layout_constraintStart_toEndOf="@+id/c12"
                 app:layout_constraintTop_toBottomOf="@+id/water9" />
 
             <Button
-                android:id="@+id/d1_1"
+                android:id="@+id/d11"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -357,14 +357,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d2_1"
-                app:layout_constraintEnd_toStartOf="@+id/d1_2"
+                app:layout_constraintBottom_toTopOf="@+id/d21"
+                app:layout_constraintEnd_toStartOf="@+id/d12"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water16"
                 app:layout_constraintTop_toBottomOf="@+id/water12" />
 
             <Button
-                android:id="@+id/d1_2"
+                android:id="@+id/d12"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -376,14 +376,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d2_2"
-                app:layout_constraintEnd_toStartOf="@+id/d1_3"
+                app:layout_constraintBottom_toTopOf="@+id/d22"
+                app:layout_constraintEnd_toStartOf="@+id/d13"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d1_1"
+                app:layout_constraintStart_toEndOf="@+id/d11"
                 app:layout_constraintTop_toBottomOf="@+id/water13" />
 
             <Button
-                android:id="@+id/d1_3"
+                android:id="@+id/d13"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -395,10 +395,10 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/d2_3"
+                app:layout_constraintBottom_toTopOf="@+id/d23"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/d1_2"
+                app:layout_constraintStart_toEndOf="@+id/d12"
                 app:layout_constraintTop_toBottomOf="@+id/water14" />
 
             <ImageButton
@@ -408,33 +408,33 @@
                 android:background="@drawable/water"
                 android:scaleType="fitXY"
                 android:src="@drawable/route_v"
-                app:layout_constraintBottom_toTopOf="@+id/c1_3"
+                app:layout_constraintBottom_toTopOf="@+id/c13"
                 app:layout_constraintEnd_toStartOf="@+id/water10"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water8"
-                app:layout_constraintTop_toBottomOf="@+id/a3_3" />
+                app:layout_constraintTop_toBottomOf="@+id/a33" />
 
             <ImageButton
                 android:id="@+id/water7"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/water"
-                app:layout_constraintBottom_toTopOf="@+id/c1_1"
+                app:layout_constraintBottom_toTopOf="@+id/c11"
                 app:layout_constraintEnd_toStartOf="@+id/water8"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/a3_1" />
+                app:layout_constraintTop_toBottomOf="@+id/a31" />
 
             <ImageButton
                 android:id="@+id/water8"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/water"
-                app:layout_constraintBottom_toTopOf="@+id/c1_2"
+                app:layout_constraintBottom_toTopOf="@+id/c12"
                 app:layout_constraintEnd_toStartOf="@+id/water9"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water7"
-                app:layout_constraintTop_toBottomOf="@+id/a3_2" />
+                app:layout_constraintTop_toBottomOf="@+id/a32" />
 
             <ImageButton
                 android:id="@+id/water10"
@@ -465,33 +465,33 @@
                 android:background="@drawable/water"
                 android:scaleType="fitXY"
                 android:src="@drawable/route_v"
-                app:layout_constraintBottom_toTopOf="@+id/d1_1"
+                app:layout_constraintBottom_toTopOf="@+id/d11"
                 app:layout_constraintEnd_toStartOf="@+id/water13"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water11"
-                app:layout_constraintTop_toBottomOf="@+id/b3_1" />
+                app:layout_constraintTop_toBottomOf="@+id/b31" />
 
             <ImageButton
                 android:id="@+id/water13"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/water"
-                app:layout_constraintBottom_toTopOf="@+id/d1_2"
+                app:layout_constraintBottom_toTopOf="@+id/d12"
                 app:layout_constraintEnd_toStartOf="@+id/water14"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water12"
-                app:layout_constraintTop_toBottomOf="@+id/b3_2" />
+                app:layout_constraintTop_toBottomOf="@+id/b32" />
 
             <ImageButton
                 android:id="@+id/water14"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/water"
-                app:layout_constraintBottom_toTopOf="@+id/d1_3"
+                app:layout_constraintBottom_toTopOf="@+id/d13"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water13"
-                app:layout_constraintTop_toBottomOf="@+id/b3_3" />
+                app:layout_constraintTop_toBottomOf="@+id/b33" />
 
             <ImageButton
                 android:id="@+id/water15"
@@ -503,7 +503,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/water17"
                 app:layout_constraintEnd_toStartOf="@+id/water16"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/c1_3"
+                app:layout_constraintStart_toEndOf="@+id/c13"
                 app:layout_constraintTop_toBottomOf="@+id/water10" />
 
             <ImageButton
@@ -514,7 +514,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/route_h"
                 app:layout_constraintBottom_toTopOf="@+id/water18"
-                app:layout_constraintEnd_toStartOf="@+id/d1_1"
+                app:layout_constraintEnd_toStartOf="@+id/d11"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water15"
                 app:layout_constraintTop_toBottomOf="@+id/water11" />
@@ -529,7 +529,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/water10"
                 app:layout_constraintEnd_toStartOf="@+id/water6"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a3_3"
+                app:layout_constraintStart_toEndOf="@+id/a33"
                 app:layout_constraintTop_toBottomOf="@+id/water3" />
 
             <ImageButton
@@ -540,13 +540,13 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/route_h"
                 app:layout_constraintBottom_toTopOf="@+id/water11"
-                app:layout_constraintEnd_toStartOf="@+id/b3_1"
+                app:layout_constraintEnd_toStartOf="@+id/b31"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water5"
                 app:layout_constraintTop_toBottomOf="@+id/water4" />
 
             <Button
-                android:id="@+id/a2_2"
+                android:id="@+id/a22"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -558,15 +558,15 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a3_2"
-                app:layout_constraintEnd_toStartOf="@+id/a2_3"
+                app:layout_constraintBottom_toTopOf="@+id/a32"
+                app:layout_constraintEnd_toStartOf="@+id/a23"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a2_1"
-                app:layout_constraintTop_toBottomOf="@+id/a1_2"
+                app:layout_constraintStart_toEndOf="@+id/a21"
+                app:layout_constraintTop_toBottomOf="@+id/a12"
                 app:srcCompat="@drawable/helmet" />
 
             <Button
-                android:id="@+id/a2_1"
+                android:id="@+id/a21"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -578,14 +578,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a3_1"
-                app:layout_constraintEnd_toStartOf="@+id/a2_2"
+                app:layout_constraintBottom_toTopOf="@+id/a31"
+                app:layout_constraintEnd_toStartOf="@+id/a22"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/a1_1" />
+                app:layout_constraintTop_toBottomOf="@+id/a11" />
 
             <Button
-                android:id="@+id/a3_1"
+                android:id="@+id/a31"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -598,13 +598,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toTopOf="@+id/water7"
-                app:layout_constraintEnd_toStartOf="@+id/a3_2"
+                app:layout_constraintEnd_toStartOf="@+id/a32"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/a2_1" />
+                app:layout_constraintTop_toBottomOf="@+id/a21" />
 
             <Button
-                android:id="@+id/a3_2"
+                android:id="@+id/a32"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -617,13 +617,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toTopOf="@+id/water8"
-                app:layout_constraintEnd_toStartOf="@+id/a3_3"
+                app:layout_constraintEnd_toStartOf="@+id/a33"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a3_1"
-                app:layout_constraintTop_toBottomOf="@+id/a2_2" />
+                app:layout_constraintStart_toEndOf="@+id/a31"
+                app:layout_constraintTop_toBottomOf="@+id/a22" />
 
             <Button
-                android:id="@+id/a3_3"
+                android:id="@+id/a33"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -638,8 +638,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/water9"
                 app:layout_constraintEnd_toStartOf="@+id/water5"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a3_2"
-                app:layout_constraintTop_toBottomOf="@+id/a2_3" />
+                app:layout_constraintStart_toEndOf="@+id/a32"
+                app:layout_constraintTop_toBottomOf="@+id/a23" />
 
             <ImageButton
                 android:id="@+id/water3"
@@ -649,7 +649,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/water5"
                 app:layout_constraintEnd_toStartOf="@+id/water4"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a2_3"
+                app:layout_constraintStart_toEndOf="@+id/a23"
                 app:layout_constraintTop_toBottomOf="@+id/water1" />
 
             <ImageButton
@@ -658,13 +658,13 @@
                 android:layout_height="0dp"
                 android:background="@drawable/water"
                 app:layout_constraintBottom_toTopOf="@+id/water6"
-                app:layout_constraintEnd_toStartOf="@+id/b2_1"
+                app:layout_constraintEnd_toStartOf="@+id/b21"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water3"
                 app:layout_constraintTop_toBottomOf="@+id/water2" />
 
             <Button
-                android:id="@+id/b2_1"
+                android:id="@+id/b21"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -676,14 +676,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b3_1"
-                app:layout_constraintEnd_toStartOf="@+id/b2_2"
+                app:layout_constraintBottom_toTopOf="@+id/b31"
+                app:layout_constraintEnd_toStartOf="@+id/b22"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water4"
-                app:layout_constraintTop_toBottomOf="@+id/b1_1" />
+                app:layout_constraintTop_toBottomOf="@+id/b11" />
 
             <Button
-                android:id="@+id/b3_1"
+                android:id="@+id/b31"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -696,13 +696,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toTopOf="@+id/water12"
-                app:layout_constraintEnd_toStartOf="@+id/b3_2"
+                app:layout_constraintEnd_toStartOf="@+id/b32"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water6"
-                app:layout_constraintTop_toBottomOf="@+id/b2_1" />
+                app:layout_constraintTop_toBottomOf="@+id/b21" />
 
             <Button
-                android:id="@+id/b3_2"
+                android:id="@+id/b32"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -715,13 +715,13 @@
                 android:textStyle="bold"
                 android:typeface="serif"
                 app:layout_constraintBottom_toTopOf="@+id/water13"
-                app:layout_constraintEnd_toStartOf="@+id/b3_3"
+                app:layout_constraintEnd_toStartOf="@+id/b33"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b3_1"
-                app:layout_constraintTop_toBottomOf="@+id/b2_2" />
+                app:layout_constraintStart_toEndOf="@+id/b31"
+                app:layout_constraintTop_toBottomOf="@+id/b22" />
 
             <Button
-                android:id="@+id/b3_3"
+                android:id="@+id/b33"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -736,11 +736,11 @@
                 app:layout_constraintBottom_toTopOf="@+id/water14"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b3_2"
-                app:layout_constraintTop_toBottomOf="@+id/b2_3" />
+                app:layout_constraintStart_toEndOf="@+id/b32"
+                app:layout_constraintTop_toBottomOf="@+id/b23" />
 
             <Button
-                android:id="@+id/b2_2"
+                android:id="@+id/b22"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -752,14 +752,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b3_2"
-                app:layout_constraintEnd_toStartOf="@+id/b2_3"
+                app:layout_constraintBottom_toTopOf="@+id/b32"
+                app:layout_constraintEnd_toStartOf="@+id/b23"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b2_1"
-                app:layout_constraintTop_toBottomOf="@+id/b1_2" />
+                app:layout_constraintStart_toEndOf="@+id/b21"
+                app:layout_constraintTop_toBottomOf="@+id/b12" />
 
             <Button
-                android:id="@+id/b2_3"
+                android:id="@+id/b23"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -771,14 +771,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b3_3"
+                app:layout_constraintBottom_toTopOf="@+id/b33"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b2_2"
-                app:layout_constraintTop_toBottomOf="@+id/b1_3" />
+                app:layout_constraintStart_toEndOf="@+id/b22"
+                app:layout_constraintTop_toBottomOf="@+id/b13" />
 
             <Button
-                android:id="@+id/a2_3"
+                android:id="@+id/a23"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -790,14 +790,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a3_3"
+                app:layout_constraintBottom_toTopOf="@+id/a33"
                 app:layout_constraintEnd_toStartOf="@+id/water3"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a2_2"
-                app:layout_constraintTop_toBottomOf="@+id/a1_3" />
+                app:layout_constraintStart_toEndOf="@+id/a22"
+                app:layout_constraintTop_toBottomOf="@+id/a13" />
 
             <Button
-                android:id="@+id/a1_2"
+                android:id="@+id/a12"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -809,14 +809,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a2_2"
-                app:layout_constraintEnd_toStartOf="@+id/a1_3"
+                app:layout_constraintBottom_toTopOf="@+id/a22"
+                app:layout_constraintEnd_toStartOf="@+id/a13"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a1_1"
+                app:layout_constraintStart_toEndOf="@+id/a11"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/a1_3"
+                android:id="@+id/a13"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -828,10 +828,10 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a2_3"
+                app:layout_constraintBottom_toTopOf="@+id/a23"
                 app:layout_constraintEnd_toStartOf="@+id/water1"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a1_2"
+                app:layout_constraintStart_toEndOf="@+id/a12"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -843,7 +843,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/water3"
                 app:layout_constraintEnd_toStartOf="@+id/water2"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/a1_3"
+                app:layout_constraintStart_toEndOf="@+id/a13"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -854,13 +854,13 @@
                 android:text="1"
 
                 app:layout_constraintBottom_toTopOf="@+id/water4"
-                app:layout_constraintEnd_toStartOf="@+id/b1_1"
+                app:layout_constraintEnd_toStartOf="@+id/b11"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water1"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/b1_1"
+                android:id="@+id/b11"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -872,14 +872,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b2_1"
-                app:layout_constraintEnd_toStartOf="@+id/b1_2"
+                app:layout_constraintBottom_toTopOf="@+id/b21"
+                app:layout_constraintEnd_toStartOf="@+id/b12"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/water2"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/b1_2"
+                android:id="@+id/b12"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -891,14 +891,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b2_2"
-                app:layout_constraintEnd_toStartOf="@+id/b1_3"
+                app:layout_constraintBottom_toTopOf="@+id/b22"
+                app:layout_constraintEnd_toStartOf="@+id/b13"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b1_1"
+                app:layout_constraintStart_toEndOf="@+id/b11"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/b1_3"
+                android:id="@+id/b13"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -910,14 +910,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/b2_3"
+                app:layout_constraintBottom_toTopOf="@+id/b23"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/b1_2"
+                app:layout_constraintStart_toEndOf="@+id/b12"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/a1_1"
+                android:id="@+id/a11"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -929,8 +929,8 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:typeface="serif"
-                app:layout_constraintBottom_toTopOf="@+id/a2_1"
-                app:layout_constraintEnd_toStartOf="@+id/a1_2"
+                app:layout_constraintBottom_toTopOf="@+id/a21"
+                app:layout_constraintEnd_toStartOf="@+id/a12"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

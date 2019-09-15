@@ -8,27 +8,51 @@ import kotlin.random.Random.Default.nextInt
 class GameInitializer(val players: MutableList<Player>) {
 
     val listOfAs = listOf(
-        Country("A11", 1, 1),
-        Country("A12", 1, 2),
-        Country("A13", 1, 3),
-        Country("A21", 2, 1),
-        Country("A22", 2, 2),
-        Country("A23", 2, 3),
-        Country("A31", 3, 1),
-        Country("A32", 3, 2),
-        Country("A33", 3, 3)
+        Country("A11", null, 1, false),
+        Country("A12", null, 1, false),
+        Country("A13", null, 1, false),
+        Country("A21", null, 1, false),
+        Country("A22", null, 1, false),
+        Country("A23", null, 1, false),
+        Country("A31", null, 1, false),
+        Country("A32", null, 1, false),
+        Country("A33", null, 1, false)
     )
 
     val listOfBs = listOf(
-        Country("B11", 6, 1),
-        Country("B12", 6, 2),
-        Country("B13", 6, 3),
-        Country("B21", 7, 1),
-        Country("B22", 7, 2),
-        Country("B23", 7, 3),
-        Country("B31", 8, 1),
-        Country("B32", 8, 2),
-        Country("B33", 8, 3)
+        Country("B11", null, 1, false),
+        Country("B12", null, 1, false),
+        Country("B13", null, 1, false),
+        Country("B21", null, 1, false),
+        Country("B22", null, 1, false),
+        Country("B23", null, 1, false),
+        Country("B31", null, 1, false),
+        Country("B32", null, 1, false),
+        Country("B33", null, 1, false)
+    )
+
+    val listOfCs = listOf(
+        Country("C11", null, 1, false),
+        Country("C12", null, 1, false),
+        Country("C13", null, 1, false),
+        Country("C21", null, 1, false),
+        Country("C22", null, 1, false),
+        Country("C23", null, 1, false),
+        Country("C31", null, 1, false),
+        Country("C32", null, 1, false),
+        Country("C33", null, 1, false)
+    )
+
+    val listOfDs = listOf(
+        Country("D11", null, 1, false),
+        Country("D12", null, 1, false),
+        Country("D13", null, 1, false),
+        Country("D21", null, 1, false),
+        Country("D22", null, 1, false),
+        Country("D23", null, 1, false),
+        Country("D31", null, 1, false),
+        Country("D32", null, 1, false),
+        Country("D33", null, 1, false)
     )
 
     val continentA = Continent("A", listOfAs)
@@ -48,7 +72,7 @@ class GameInitializer(val players: MutableList<Player>) {
 
 
     private fun assignCountry(continent: Int, country: Int, player: Int) {
-        listOfContinents[continent].countries[country].owner = players[player]
+        listOfContinents[continent].countries[country].player = players[player].name
     }
 
     //Distribute all countries available to players
