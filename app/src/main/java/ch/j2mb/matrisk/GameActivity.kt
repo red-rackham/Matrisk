@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
@@ -12,19 +13,24 @@ import androidx.fragment.app.FragmentTransaction
 import ch.j2mb.matrisk.fragments.*
 import ch.j2mb.matrisk.gameplay.controller.GameManager
 import ch.j2mb.matrisk.gameplay.helper.GameInitializer
+import ch.j2mb.matrisk.gameplay.helper.JsonHandler
+import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
+import kotlin.properties.Delegates
 
 
 class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInterface {
 
     val fragmentManager: FragmentManager = supportFragmentManager
-    var playerList = getPlayers()
-    val gameManager = GameManager(playerList, "start_state.json", this)
-
+    lateinit var playerList: MutableList<Player>
+    lateinit var gameManager: GameManager
+    var reinforcementFragID: Int = 0
+    var attackFragID: Int = 0
+    var relocationFragID: Int = 0
 
     var a11: Button? = null
     var a12: Button? = null
@@ -76,11 +82,15 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
+        playerList = getPlayers()
+        gameManager = GameManager(playerList, "start_state.json", this)
+
         getReinforcementFragment()
-        testToaster()
+        //testToaster()
+
+
 
         a11 = findViewById(R.id.a11)
         a12 = findViewById(R.id.a12)
@@ -138,6 +148,21 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
             }
     }
 
+    fun jsontest() {
+        val jsonHandler = JsonHandler()
+        var continentList: ContinentList?
+        continentList = jsonHandler.getCountriesFromGson("start_state.json", this)
+        if(continentList == null) {
+            Log.e("geht nicht", "alles null")
+        } else {
+            for(continent in continentList.continents) {
+                for (country in continent.countries) {
+                    println(country.name)
+                }
+            }
+        }
+    }
+
     /*
     *Function to get Players, can be extended if more players allowed
      */
@@ -148,7 +173,7 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
     }
 
     fun buttonClicked(button: Button?) {
-        //TODO()
+        gameManager.buttonClicked(button)
     }
 
     fun changeButtonToBlue(button: Button?) {
@@ -196,8 +221,8 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
     }
 
 
-    fun testToaster() {
-        Toast.makeText(this@GameActivity, "Toaster clicked!!!!", Toast.LENGTH_LONG).show()
+    fun toastIt(bread: String) {
+        Toast.makeText(this@GameActivity, bread, Toast.LENGTH_LONG).show()
     }
 
 
@@ -212,6 +237,8 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
             transaction.replace(R.id.fragment_container, reinforcementFragment)
         }
         transaction.commit()
+        reinforcementFragID = reinforcementFragment.id
+
     }
 
     override fun getAttackFragment() {
@@ -219,6 +246,7 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
         val attackFragment: AttackFragment = AttackFragment().newInstance()
         transaction.replace(R.id.fragment_container, attackFragment)
         transaction.commit()
+        attackFragID = attackFragment.id
     }
 
     private fun getRelocationFragment() {
@@ -226,6 +254,7 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
         val relocationFragment: RelocationFragment = RelocationFragment().newInstance()
         transaction.add(R.id.fragment_container, relocationFragment)
         transaction.commit()
+        relocationFragID = relocationFragment.id
     }
 
 

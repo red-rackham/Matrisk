@@ -9,7 +9,7 @@ import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlin.random.Random.Default.nextInt
 
-class GameInitializer(val players: MutableList<Player>, val initialGameState: String, var context: Context) {
+class GameInitializer(val players: MutableList<Player>, private val gameState: String, val newGame:Boolean, val context: Context) {
 
     /*
     Legacy
@@ -73,17 +73,18 @@ class GameInitializer(val players: MutableList<Player>, val initialGameState: St
 
         //Get initial set of countries/continents
         val jsonHandler = JsonHandler()
-        val tempList = jsonHandler.getCountriesFromGson(initialGameState, context)
+        val tempList = jsonHandler.getCountriesFromGson(gameState, context)
         if(tempList != null) {
             listOfContinents = tempList
         } else {
             Log.e("Initalizer", "listOfContinents == 0 !!!")
         }
 
-        distributeCountries()
-
-        //randomize turn order with the players List --> For testing disabled!!
-        //players.shuffle()
+        if(newGame) {
+            distributeCountries()
+            //randomize turn order with the players List --> For testing disabled!!
+            //players.shuffle()
+        }
 
     }
 
@@ -103,18 +104,21 @@ class GameInitializer(val players: MutableList<Player>, val initialGameState: St
         //When countries cannot be distributed evenly the leftovers will be distributed randomly to players
         var moduloCountry = totalNrOfCountries % players.size
 
-        var distributionList = mutableListOf(players.size)
+
+        var distributionList = mutableListOf<Int>()
+        for(i in 0 until players.size)
+            distributionList.add(i, 0)
 
         //Distribution loop
-        for (i in listOfContinents.continents.indices) {
-            for (j in listOfContinents.continents[i].countries.indices) {
+        for (continent in listOfContinents.continents.indices) {
+            for (country in listOfContinents.continents[continent].countries.indices) {
                 var assigned = false
                 while (!assigned) {
                     //Pick random player from List
                     var player = nextInt(0, players.size)
                     //Check if player has not reached max amount of assigned countries
                     if (distributionList[player] < minCountryPerPlayer + moduloCountry) {
-                        assignCountry(i, j, player)
+                        assignCountry(continent, country, player)
                         //If a country from the modulo was assigned, reduce moduloCounty by one
                         if (distributionList[player] >= minCountryPerPlayer) moduloCountry--
                         assigned = true
