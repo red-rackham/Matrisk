@@ -1,6 +1,6 @@
 package ch.j2mb.matrisk
 
-import android.content.Context
+
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -11,86 +11,92 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import ch.j2mb.matrisk.fragments.*
-import ch.j2mb.matrisk.gameplay.controller.GameManager
 import ch.j2mb.matrisk.gameplay.helper.GameInitializer
 import ch.j2mb.matrisk.gameplay.helper.JsonHandler
+import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
-import kotlin.properties.Delegates
 
 
-class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInterface {
+class GameActivity : AppCompatActivity(), gameActivityInterface {
 
     val fragmentManager: FragmentManager = supportFragmentManager
-    lateinit var playerList: MutableList<Player>
-    lateinit var gameManager: GameManager
+    private lateinit var playerList: MutableList<Player>
+
+    var phase = "initialize game"
+    //pointer to player in players<> that is now on the move
+    var moveOfPlayer = 0
+    var round: Int = 0
+    var continentList = ContinentList()
+
+    lateinit var reinforcementFragment: ReinforcementFragment
+
     var reinforcementFragID: Int = 0
     var attackFragID: Int = 0
     var relocationFragID: Int = 0
 
-    var a11: Button? = null
-    var a12: Button? = null
-    var a13: Button? = null
-    var a21: Button? = null
-    var a22: Button? = null
-    var a23: Button? = null
-    var a31: Button? = null
-    var a32: Button? = null
-    var a33: Button? = null
+    lateinit var a11: Button
+    lateinit var a12: Button
+    lateinit var a13: Button
+    lateinit var a21: Button
+    lateinit var a22: Button
+    lateinit var a23: Button
+    lateinit var a31: Button
+    lateinit var a32: Button
+    lateinit var a33: Button
 
-    var b11: Button? = null
-    var b12: Button? = null
-    var b13: Button? = null
-    var b21: Button? = null
-    var b22: Button? = null
-    var b23: Button? = null
-    var b31: Button? = null
-    var b32: Button? = null
-    var b33: Button? = null
+    lateinit var b11: Button
+    lateinit var b12: Button
+    lateinit var b13: Button
+    lateinit var b21: Button
+    lateinit var b22: Button
+    lateinit var b23: Button
+    lateinit var b31: Button
+    lateinit var b32: Button
+    lateinit var b33: Button
 
-    var c11: Button? = null
-    var c12: Button? = null
-    var c13: Button? = null
-    var c21: Button? = null
-    var c22: Button? = null
-    var c23: Button? = null
-    var c31: Button? = null
-    var c32: Button? = null
-    var c33: Button? = null
+    lateinit var c11: Button
+    lateinit var c12: Button
+    lateinit var c13: Button
+    lateinit var c21: Button
+    lateinit var c22: Button
+    lateinit var c23: Button
+    lateinit var c31: Button
+    lateinit var c32: Button
+    lateinit var c33: Button
 
-    var d11: Button? = null
-    var d12: Button? = null
-    var d13: Button? = null
-    var d21: Button? = null
-    var d22: Button? = null
-    var d23: Button? = null
-    var d31: Button? = null
-    var d32: Button? = null
-    var d33: Button? = null
+    lateinit var d11: Button
+    lateinit var d12: Button
+    lateinit var d13: Button
+    lateinit var d21: Button
+    lateinit var d22: Button
+    lateinit var d31: Button
+    lateinit var d23: Button
+    lateinit var d32: Button
+    lateinit var d33: Button
 
-    var continentA: List<Button?> = listOf()
-    var continentB: List<Button?> = listOf()
-    var continentC: List<Button?> = listOf()
-    var continentD: List<Button?> = listOf()
+    lateinit var continentA: List<Button>
+    lateinit var continentB: List<Button>
+    lateinit var continentC: List<Button>
+    lateinit var continentD: List<Button>
 
-    var continents: List<List<Button?>> = listOf()
+    lateinit var continents: List<List<Button>>
+
+
+    val initialGameState: String = "start_state.json"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        getReinforcementFragment()
 
         playerList = getPlayers()
-        gameManager = GameManager(playerList, "start_state.json", this)
-
-        getReinforcementFragment()
-        //testToaster()
-
-
 
         a11 = findViewById(R.id.a11)
         a12 = findViewById(R.id.a12)
@@ -141,27 +147,35 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
 
         for (i in 0 until continents.size) {
             for (j in 0 until continents[i].size) {
-                    continents[i][j]?.setOnClickListener {
-                        buttonClicked(continents[i][j])
-                    }
-                }
-            }
-    }
+                continents[i][j]?.setOnClickListener {
+                    buttonClicked(continents[i][j])
 
-    fun jsontest() {
-        val jsonHandler = JsonHandler()
-        var continentList: ContinentList?
-        continentList = jsonHandler.getCountriesFromGson("start_state.json", this)
-        if(continentList == null) {
-            Log.e("geht nicht", "alles null")
-        } else {
-            for(continent in continentList.continents) {
-                for (country in continent.countries) {
-                    println(country.name)
+                    Log.d("onCreate", "setOnClickListener: ${getButtonId(continents[i][j])}")
                 }
             }
         }
+
+        val gameInitializer = GameInitializer(playerList, initialGameState, true, this)
+        continentList = gameInitializer.listOfContinents
+        playerList = gameInitializer.players
+        phase = "reinforcement"
+        updateButtons()
     }
+
+    override fun updateButtons(){
+        for((i, continent) in continentList.continents.withIndex())
+            for((j, country) in continent.countries.withIndex()) {
+                when(country.player) {
+                    playerList[0].name -> changeButtonToBlue(continents[i][j])
+                    playerList[1].name -> changeButtonToRed(continents[i][j])
+                    //TODO: for more players
+                }
+                continents[i][j].text = country.count.toString()
+            }
+    }
+
+
+
 
     /*
     *Function to get Players, can be extended if more players allowed
@@ -172,9 +186,61 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
         return mutableListOf(playerA, playerB)
     }
 
-    fun buttonClicked(button: Button?) {
-        gameManager.buttonClicked(button)
+    override fun setReinforcement(countrySelected: String, troops: Int) {
+        for (i in continents.indices) {
+            for (j in continents[i].indices) {
+                if (getButtonId(continents[i][j]) == countrySelected) {
+                    for (k in 0 until troops) increaseTroops(continents[i][j])
+                    var count = (continentList.continents[i].countries[j].count?: 1) + troops
+                    continentList.continents[i].countries[j].count = count
+                }
+            }
+        }
     }
+
+
+    fun buttonClicked(button: Button) {
+
+        //Check if selected country is under control of player
+        var ownButton: Boolean = false
+        for (continent in continentList.continents)
+            for (country in continent.countries)
+                if (country.name == getButtonId(button) && country.player == playerList[moveOfPlayer].name)
+                    ownButton = true
+
+        //only do something if it is the turn of the human player
+        if (!playerList[moveOfPlayer].bot) {
+
+            val buttonID = getButtonId(button)
+            toastIt(buttonID)
+
+            when (phase) {
+                "reinforcement" -> {
+                    if (ownButton) {
+                        updateButtons()
+                        changeButtonToWhite(button)
+                        reinforcementFragment.updateCountrySelected(buttonID)
+                    }
+                }
+
+                "attack" -> {
+                }
+
+                "relocation" -> {
+                }
+            }
+        }
+    }
+
+    fun getButtonId(button: Button): String {
+        //This is somehow ugly but no better solution was found how to get the ID
+        var buttonID = button.toString()
+        buttonID = buttonID.substring(buttonID.length - 4, buttonID.length - 1).toUpperCase()
+        return buttonID
+    }
+
+
+
 
     fun changeButtonToBlue(button: Button?) {
         if (button != null) {
@@ -220,16 +286,17 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
         }
     }
 
+    override fun attack(source: String, target: String, troops: Int) {
 
-    fun toastIt(bread: String) {
+    }
+
+    override fun toastIt(bread: String) {
         Toast.makeText(this@GameActivity, bread, Toast.LENGTH_LONG).show()
     }
 
-
-
-    private fun getReinforcementFragment() {
+    override fun getReinforcementFragment() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        val reinforcementFragment: ReinforcementFragment = ReinforcementFragment().newInstance()
+        reinforcementFragment = ReinforcementFragment().newInstance()
 
         if (fragmentManager.fragments.size == 0) {
             transaction.add(R.id.fragment_container, reinforcementFragment)
@@ -237,8 +304,6 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
             transaction.replace(R.id.fragment_container, reinforcementFragment)
         }
         transaction.commit()
-        reinforcementFragID = reinforcementFragment.id
-
     }
 
     override fun getAttackFragment() {
@@ -249,7 +314,7 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
         attackFragID = attackFragment.id
     }
 
-    private fun getRelocationFragment() {
+    override fun getRelocationFragment() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         val relocationFragment: RelocationFragment = RelocationFragment().newInstance()
         transaction.add(R.id.fragment_container, relocationFragment)
@@ -262,28 +327,20 @@ class GameActivity : AppCompatActivity(), ReinforcementFragment.ReinforcementInt
      * TestStuff
      */
 
-
-    override fun testStuff() {
-
-        GlobalScope.launch(context = Dispatchers.Main) {
-
-            for (i in 0 until continents.size) {
-                for (j in 0 until continents[i].size) {
-                    changeButtonToBlack(continents[i][j])
-                    increaseTroops(continents[i][j])
-                    sleep(100)
-                    changeButtonToWhite(continents[i][j])
-                    increaseTroops(continents[i][j])
-                    sleep(100)
-                    changeButtonToRed(continents[i][j])
-                    increaseTroops(continents[i][j])
-                    sleep(100)
-                    changeButtonToBlue(continents[i][j])
-                    increaseTroops(continents[i][j])
-                    sleep(100)
+    fun jsontest() {
+        val jsonHandler = JsonHandler()
+        var continentList: ContinentList?
+        continentList = jsonHandler.getCountriesFromGson("start_state.json", this)
+        if (continentList == null) {
+            Log.e("geht nicht", "alles null")
+        } else {
+            for (continent in continentList.continents) {
+                for (country in continent.countries) {
+                    println(country.name)
                 }
             }
         }
     }
+
 
 }

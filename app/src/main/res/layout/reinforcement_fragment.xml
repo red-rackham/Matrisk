@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pergament"
+    android:isScrollContainer="false"
     android:orientation="vertical">
 
 
@@ -21,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#0A630A"
             app:srcCompat="@drawable/phase_1" />
     </LinearLayout>
 
@@ -92,7 +94,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:minHeight="40dp"
-            android:text="1"
+            android:text="0"
             android:textStyle="bold" />
 
         <Button
@@ -134,14 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/TestFragmentChangeButton1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="goToNextFragment" />
-    </LinearLayout>
+        android:orientation="horizontal" />
 
 
 </LinearLayout>

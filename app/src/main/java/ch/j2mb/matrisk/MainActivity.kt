@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val gameActivityIntent = Intent(this, GameActivity::class.java)
-        val onePlayerIntent = Intent(this, TestActivity::class.java)
         val multiPlayerIntent = Intent(this, MultiPlayerActivity::class.java)
         val profileIntent = Intent(this, ProfileActivity::class.java)
         val settingsIntent = Intent(this, SettingsActivity::class.java)

@@ -9,15 +9,16 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.j2mb.matrisk.R
+import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
 
 const val NO_SELECTION: String = "<please select>"
 
 class ReinforcementFragment : Fragment() {
 
-    private lateinit var listener: ReinforcementInterface
+    private lateinit var listener: gameActivityInterface
 
-
-    var troopsAvailable = 0
+    //TODO: SET TO 0, TESTING IS 42
+    var troopsAvailable = 42
     var troopsSelected = 0
     var countrySelected = NO_SELECTION
     private lateinit var troopsAvailableText: TextView
@@ -26,7 +27,7 @@ class ReinforcementFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is ReinforcementInterface) listener = context
+        if (context is gameActivityInterface) listener = context
     }
 
 
@@ -46,11 +47,6 @@ class ReinforcementFragment : Fragment() {
         targetCountryText = fragmentView.findViewById(R.id.targetCountryReIn)
         troopsSelectedText = fragmentView.findViewById(R.id.nrOfTroopsSelectedReIn)
 
-        //TODO: Remove testfunction
-        //Set ClickListener on Testbutton
-        fragmentView.findViewById<Button>(R.id.TestFragmentChangeButton1).setOnClickListener {
-            listener.getAttackFragment()
-        }
 
         fragmentView.findViewById<Button>(R.id.dispatchButton).setOnClickListener {
             dispatch()
@@ -70,10 +66,20 @@ class ReinforcementFragment : Fragment() {
         return fragmentView
     }
 
-    private fun setTroops(country: String, troops: Int) {
-        //TODO:
-        listener.
 
+    fun updateCountrySelected(country: String) {
+        countrySelected = country
+        targetCountryText.text = country
+    }
+
+    fun updateTroopsSelected(troops: Int){
+        troopsSelected = troops
+        troopsSelectedText.text = troops.toString()
+    }
+
+    fun updateTroopsAvailable(troops: Int) {
+        troopsAvailable = troops
+        troopsAvailableText.text = troops.toString()
     }
 
     private fun addTroops() {
@@ -96,26 +102,20 @@ class ReinforcementFragment : Fragment() {
         troopsAvailableText.text = troopsAvailable.toString()
         troopsSelectedText.text = troopsSelected.toString()
         targetCountryText.text = NO_SELECTION
+        listener.updateButtons()
     }
 
     //TODO
     private fun dispatch() {
         if (countrySelected == NO_SELECTION) {
-            //TODO: make toaster
+            listener.toastIt("no country selected")
         } else if (troopsSelected == 0) {
-            //TODO: make toaster
+            listener.toastIt("no troops selected")
         } else {
-            setTroops(countrySelected, troopsSelected)
-            troopsSelected = 0
+            listener.setReinforcement(countrySelected, troopsSelected)
+            updateTroopsSelected(0)
+            if(troopsAvailable == 0) listener.getAttackFragment()
         }
 
     }
-
-
-    interface ReinforcementInterface {
-        fun testStuff()
-        fun getAttackFragment()
-    }
-
-
 }

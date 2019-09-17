@@ -2,10 +2,7 @@ package ch.j2mb.matrisk.gameplay.helper
 
 import android.content.Context
 import android.util.Log
-import ch.j2mb.matrisk.gameplay.controller.GameManager
-import ch.j2mb.matrisk.gameplay.model.Continent
 import ch.j2mb.matrisk.gameplay.model.ContinentList
-import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlin.random.Random.Default.nextInt
 
