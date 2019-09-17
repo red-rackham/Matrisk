@@ -17,6 +17,8 @@ import com.google.gson.Gson
 import java.io.InputStream
 import java.io.InputStreamReader
 
+//Test
+
 
 /*This class is the Game manager who handles all the logic, process and communication with the players*/
 class GameManager(

@@ -70,26 +70,27 @@ class ReinforcementFragment : Fragment() {
         return fragmentView
     }
 
-    fun setTroops(country: String, troops: Int) {
+    private fun setTroops(country: String, troops: Int) {
         //TODO:
+        listener.
 
     }
 
-    fun addTroops() {
+    private fun addTroops() {
         if (troopsAvailable > 0) {
             this.troopsAvailableText.text = (--troopsAvailable).toString()
             this.troopsSelectedText.text = (++troopsSelected).toString()
         }
     }
 
-    fun minTroops() {
+    private fun minTroops() {
         if (troopsSelected > 0) {
             troopsSelectedText.text = (--troopsSelected).toString()
             troopsAvailableText.text = (++troopsAvailable).toString()
         }
     }
 
-    fun cancel() {
+    private fun cancel() {
         troopsAvailable += troopsSelected
         troopsSelected = 0
         troopsAvailableText.text = troopsAvailable.toString()
@@ -98,7 +99,7 @@ class ReinforcementFragment : Fragment() {
     }
 
     //TODO
-    fun dispatch() {
+    private fun dispatch() {
         if (countrySelected == NO_SELECTION) {
             //TODO: make toaster
         } else if (troopsSelected == 0) {
