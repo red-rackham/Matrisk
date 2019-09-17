@@ -64,7 +64,7 @@ class GameManager(
             listener.changeButtonToBlack(button)
 
             var buttonID: String = button.toString()
-            //This is somehow ugly but no solution was found how to get the ID field from the layout :(
+            //This is somehow ugly but no better solution was found how to get the ID
             buttonID = buttonID.substring(buttonID.length - 4, buttonID.length - 1).toUpperCase()
             listener.toastIt(buttonID)
 
