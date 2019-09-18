@@ -12,13 +12,13 @@ import ch.j2mb.matrisk.R
 import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
 
 
-
 class AttackFragment : Fragment() {
 
     private lateinit var listener: gameActivityInterface
 
+    var troopsAvailable = 0
     var troopsSelected = 0
-    var troopsLeft = null
+    var troopsLeft = 0
     var sourceCountry = NO_SELECTION
     var targetCountry = NO_SELECTION
 
@@ -51,39 +51,69 @@ class AttackFragment : Fragment() {
         troopsLeftText = fragmentView.findViewById(R.id.troopsAvailableAttack)
 
         fragmentView.findViewById<Button>(R.id.attackButton).setOnClickListener {
-            //TODO
+            attack()
         }
         fragmentView.findViewById<Button>(R.id.plusAttackButton).setOnClickListener {
-            //TODO
+            addTroops()
         }
         fragmentView.findViewById<Button>(R.id.minusAttackButton).setOnClickListener {
-            //TODO
+            minTroops()
         }
-
 
         fragmentView.findViewById<Button>(R.id.skipAttackButton).setOnClickListener {
             listener.getRelocationFragment()
+            //TODO: PopUp "do you really want to skip / goto next phase
         }
-
-
-
-
-
-
 
         return fragmentView
     }
 
-
     private fun attack() {
         when {
-            sourceCountry != NO_SELECTION -> listener.toastIt("select country")
-            targetCountry != NO_SELECTION -> listener.toastIt("select target")
-            troopsSelected <1 -> listener.toastIt("select troops")
+            sourceCountry == NO_SELECTION -> listener.toastIt("select country")
+            targetCountry == NO_SELECTION -> listener.toastIt("select target")
+            troopsSelected < 1 -> listener.toastIt("select troops")
             else -> listener.attack(sourceCountry, targetCountry, troopsSelected)
         }
-
     }
 
+    private fun addTroops(){
+        when {
+            troopsAvailable < 2 -> listener.toastIt("no troops for attack available in selected country")
+            troopsLeft < 1 -> listener.toastIt("no troops left for attack")
+            else -> {
+                troopsLeft--
+                troopsSelected++
+                updateTextViews()
+            }
+        }
+    }
 
+    private fun minTroops(){
+        when {
+            troopsSelected < 1 -> listener.toastIt("no troops selected")
+            else -> {
+                troopsLeft++
+                troopsSelected--
+                updateTextViews()
+            }
+        }
+    }
+
+    private fun updateTextViews(){
+        troopsSelectedText.text = troopsSelected.toString()
+        troopsLeftText.text = troopsLeft.toString()
+        sourceCountryText.text = sourceCountry
+        targetCountryText.text = targetCountry
+    }
+
+    fun updateSourceCountry(country: String){
+        sourceCountry = country
+        updateTextViews()
+    }
+
+    fun updateTargetCountry(country: String) {
+        targetCountry = country
+        updateTextViews()
+    }
 }

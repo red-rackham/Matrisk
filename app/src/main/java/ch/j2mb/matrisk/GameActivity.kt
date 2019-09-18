@@ -34,6 +34,8 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
     var continentList = ContinentList()
 
     lateinit var reinforcementFragment: ReinforcementFragment
+    lateinit var attackFragment: AttackFragment
+    lateinit var relocationFragment: RelocationFragment
 
     var reinforcementFragID: Int = 0
     var attackFragID: Int = 0
@@ -147,7 +149,7 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
 
         for (i in 0 until continents.size) {
             for (j in 0 until continents[i].size) {
-                continents[i][j]?.setOnClickListener {
+                continents[i][j].setOnClickListener {
                     buttonClicked(continents[i][j])
 
                     Log.d("onCreate", "setOnClickListener: ${getButtonId(continents[i][j])}")
@@ -162,10 +164,10 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
         updateButtons()
     }
 
-    override fun updateButtons(){
-        for((i, continent) in continentList.continents.withIndex())
-            for((j, country) in continent.countries.withIndex()) {
-                when(country.player) {
+    override fun updateButtons() {
+        for ((i, continent) in continentList.continents.withIndex())
+            for ((j, country) in continent.countries.withIndex()) {
+                when (country.player) {
                     playerList[0].name -> changeButtonToBlue(continents[i][j])
                     playerList[1].name -> changeButtonToRed(continents[i][j])
                     //TODO: for more players
@@ -173,8 +175,6 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
                 continents[i][j].text = country.count.toString()
             }
     }
-
-
 
 
     /*
@@ -191,7 +191,7 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
             for (j in continents[i].indices) {
                 if (getButtonId(continents[i][j]) == countrySelected) {
                     for (k in 0 until troops) increaseTroops(continents[i][j])
-                    var count = (continentList.continents[i].countries[j].count?: 1) + troops
+                    var count = (continentList.continents[i].countries[j].count ?: 1) + troops
                     continentList.continents[i].countries[j].count = count
                 }
             }
@@ -224,12 +224,29 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
                 }
 
                 "attack" -> {
+                    when (ownButton) {
+                        true -> attackFragment.updateSourceCountry(buttonID)
+                        false -> {
+                            when {
+                                (attackFragment.sourceCountry != NO_SELECTION) -> toastIt("choose first attacking country")
+                                (attackCheck(
+                                    attackFragment.sourceCountry,
+                                    buttonID
+                                )) -> attackFragment.updateTargetCountry(buttonID)
+                                else -> toastIt("selection not valid")
+                            }
+                        }
+                    }
                 }
-
                 "relocation" -> {
                 }
             }
         }
+    }
+
+    fun attackCheck(source: String, target: String): Boolean {
+        //TODO: Implement Check
+        return true
     }
 
     fun getButtonId(button: Button): String {
@@ -238,9 +255,6 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
         buttonID = buttonID.substring(buttonID.length - 4, buttonID.length - 1).toUpperCase()
         return buttonID
     }
-
-
-
 
     fun changeButtonToBlue(button: Button?) {
         if (button != null) {
@@ -308,7 +322,7 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
 
     override fun getAttackFragment() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        val attackFragment: AttackFragment = AttackFragment().newInstance()
+        attackFragment = AttackFragment().newInstance()
         transaction.replace(R.id.fragment_container, attackFragment)
         transaction.commit()
         attackFragID = attackFragment.id
@@ -316,10 +330,14 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
 
     override fun getRelocationFragment() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        val relocationFragment: RelocationFragment = RelocationFragment().newInstance()
+        relocationFragment = RelocationFragment().newInstance()
         transaction.add(R.id.fragment_container, relocationFragment)
         transaction.commit()
         relocationFragID = relocationFragment.id
+    }
+
+    override fun changePhase(phase: String) {
+        this.phase = phase
     }
 
 

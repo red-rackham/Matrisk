@@ -114,7 +114,10 @@ class ReinforcementFragment : Fragment() {
         } else {
             listener.setReinforcement(countrySelected, troopsSelected)
             updateTroopsSelected(0)
-            if(troopsAvailable == 0) listener.getAttackFragment()
+            if(troopsAvailable == 0) {
+                listener.changePhase("attack")
+                listener.getAttackFragment()
+            }
         }
 
     }

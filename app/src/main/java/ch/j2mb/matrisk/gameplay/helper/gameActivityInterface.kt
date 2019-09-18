@@ -9,5 +9,6 @@ interface gameActivityInterface {
     fun setReinforcement(countrySelected: String, troops: Int)
     fun attack(source: String, target: String, troops: Int)
     fun updateButtons()
+    fun changePhase(phase: String)
 
 }
