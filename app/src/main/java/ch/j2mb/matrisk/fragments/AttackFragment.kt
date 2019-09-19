@@ -9,12 +9,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
+import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 
 
 class AttackFragment : Fragment() {
 
-    private lateinit var listener: gameActivityInterface
+    private lateinit var listener: GameActivityInterface
 
     var troopsAvailable = 0
     var troopsSelected = 0
@@ -29,7 +29,7 @@ class AttackFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is gameActivityInterface) listener = context
+        if (context is GameActivityInterface) listener = context
     }
 
     fun newInstance(): AttackFragment {
@@ -61,10 +61,11 @@ class AttackFragment : Fragment() {
         }
 
         fragmentView.findViewById<Button>(R.id.skipAttackButton).setOnClickListener {
+            listener.toastIt("test button .,...................................")
             listener.getRelocationFragment()
             //TODO: PopUp "do you really want to skip / goto next phase
         }
-
+        updateTextViews()
         return fragmentView
     }
 
@@ -107,8 +108,11 @@ class AttackFragment : Fragment() {
         targetCountryText.text = targetCountry
     }
 
-    fun updateSourceCountry(country: String){
-        sourceCountry = country
+    fun updateSourceCountry(countryId: String){
+        sourceCountry = countryId
+        troopsAvailable = listener.getCountryById(countryId)?.count ?: 0
+        troopsLeft = troopsAvailable
+        troopsSelected = 0
         updateTextViews()
     }
 

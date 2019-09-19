@@ -107,7 +107,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:minHeight="40dp"
-            android:text="5"
+            android:text="0"
             android:textStyle="bold" />
 
         <Button
@@ -139,7 +139,7 @@
             android:layout_height="wrap_content"
             android:background="#BFF83B"
             android:gravity="center|center_horizontal"
-            android:text="1"
+            android:text="0"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -173,14 +173,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/TestFragmentChangeButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="goToNextFragment" />
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
 
 

@@ -1,28 +1,33 @@
 package ch.j2mb.matrisk
 
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
+import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import ch.j2mb.matrisk.fragments.*
+import ch.j2mb.matrisk.gameplay.helper.BattleGround
 import ch.j2mb.matrisk.gameplay.helper.GameInitializer
 import ch.j2mb.matrisk.gameplay.helper.JsonHandler
-import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
+import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 import ch.j2mb.matrisk.gameplay.model.ContinentList
+import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
 
 
-class GameActivity : AppCompatActivity(), gameActivityInterface {
+class GameActivity : AppCompatActivity(), GameActivityInterface {
 
     val fragmentManager: FragmentManager = supportFragmentManager
     private lateinit var playerList: MutableList<Player>
@@ -36,6 +41,8 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
     lateinit var reinforcementFragment: ReinforcementFragment
     lateinit var attackFragment: AttackFragment
     lateinit var relocationFragment: RelocationFragment
+    lateinit var battleGround: BattleGround
+    lateinit var attackPopupWindow: PopupWindow
 
     var reinforcementFragID: Int = 0
     var attackFragID: Int = 0
@@ -147,8 +154,8 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
 
         continents = listOf(continentA, continentB, continentC, continentD)
 
-        for (i in 0 until continents.size) {
-            for (j in 0 until continents[i].size) {
+        for (i in continents.indices) {
+            for (j in continents[i].indices) {
                 continents[i][j].setOnClickListener {
                     buttonClicked(continents[i][j])
 
@@ -191,7 +198,7 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
             for (j in continents[i].indices) {
                 if (getButtonId(continents[i][j]) == countrySelected) {
                     for (k in 0 until troops) increaseTroops(continents[i][j])
-                    var count = (continentList.continents[i].countries[j].count ?: 1) + troops
+                    var count = continentList.continents[i].countries[j].count + troops
                     continentList.continents[i].countries[j].count = count
                 }
             }
@@ -225,14 +232,25 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
 
                 "attack" -> {
                     when (ownButton) {
-                        true -> attackFragment.updateSourceCountry(buttonID)
+                        true -> {
+                            attackFragment.updateSourceCountry(buttonID)
+                            attackFragment.updateTargetCountry(NO_SELECTION)
+                            updateButtons()
+                            changeButtonToWhite(button)
+                        }
                         false -> {
                             when {
-                                (attackFragment.sourceCountry != NO_SELECTION) -> toastIt("choose first attacking country")
+                                (attackFragment.sourceCountry == NO_SELECTION) -> toastIt("choose first attacking country")
                                 (attackCheck(
                                     attackFragment.sourceCountry,
                                     buttonID
-                                )) -> attackFragment.updateTargetCountry(buttonID)
+                                )) -> {
+                                    updateButtons()
+                                    val attackButton = getButtonById(attackFragment.sourceCountry)
+                                    attackButton?.let { changeButtonToWhite(attackButton) }
+                                    changeButtonToBlack(button)
+                                    attackFragment.updateTargetCountry(buttonID)
+                                }
                                 else -> toastIt("selection not valid")
                             }
                         }
@@ -254,6 +272,20 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
         var buttonID = button.toString()
         buttonID = buttonID.substring(buttonID.length - 4, buttonID.length - 1).toUpperCase()
         return buttonID
+    }
+
+    override fun getButtonById(buttonId: String): Button? {
+        for (i in continents.indices)
+            for (j in continents[i].indices)
+                if (getButtonId(continents[i][j]) == buttonId) return continents[i][j]
+        return null
+    }
+
+    override fun getCountryById(countryId: String): Country? {
+        for (continent in continentList.continents)
+            for (country in continent.countries)
+                if (country.name == countryId) return country
+        return null
     }
 
     fun changeButtonToBlue(button: Button?) {
@@ -300,8 +332,10 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
         }
     }
 
-    override fun attack(source: String, target: String, troops: Int) {
 
+    override fun attack(source: String, target: String, troops: Int) {
+        val counterparties = listOf(getCountryById(source)!!, getCountryById(target)!!)
+        battleGround = BattleGround(counterparties, troops, this)
     }
 
     override fun toastIt(bread: String) {
@@ -331,13 +365,53 @@ class GameActivity : AppCompatActivity(), gameActivityInterface {
     override fun getRelocationFragment() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         relocationFragment = RelocationFragment().newInstance()
-        transaction.add(R.id.fragment_container, relocationFragment)
+        transaction.replace(R.id.fragment_container, relocationFragment)
         transaction.commit()
         relocationFragID = relocationFragment.id
     }
 
     override fun changePhase(phase: String) {
         this.phase = phase
+    }
+
+    override fun showAttackPopup() : View {
+        val view: View = findViewById(R.id.content)
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popUpView = inflater.inflate(R.layout.attack_popup, null)
+
+        findViewById<Button>(R.id.attackButtonPop).setOnClickListener {
+                updateAfterFight(battleGround.fight())
+        }
+
+        findViewById<Button>(R.id.fastAttackButtonPop).setOnClickListener {
+            updateAfterFight(battleGround.fastfight())
+        }
+
+        findViewById<Button>(R.id.withdrawalButtonPop).setOnClickListener {
+            battleGround.withdrawal()
+        }
+
+        val width = 600
+        val height = 800
+        val focusable = false
+        attackPopupWindow = PopupWindow(popUpView, width, height, focusable)
+
+        attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        return popUpView
+    }
+
+    override fun closeAttackPopup() {
+        attackPopupWindow.dismiss()
+    }
+
+    fun updateAfterFight(counterparties: List<Country>?) {
+        if (counterparties != null)
+            for (i in 0..1) {
+                val country = getCountryById(counterparties[i].name)
+                country?.player = counterparties[i].player
+                country?.count = counterparties[i].count
+                //country?.modified = true
+            }
     }
 
 

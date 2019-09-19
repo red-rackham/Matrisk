@@ -9,16 +9,16 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.helper.gameActivityInterface
+import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 
 const val NO_SELECTION: String = "<please select>"
 
 class ReinforcementFragment : Fragment() {
 
-    private lateinit var listener: gameActivityInterface
+    private lateinit var listener: GameActivityInterface
 
-    //TODO: SET TO 0, TESTING IS 42
-    var troopsAvailable = 42
+    //TODO: SET TO 0, TESTING IS 5
+    var troopsAvailable = 5
     var troopsSelected = 0
     var countrySelected = NO_SELECTION
     private lateinit var troopsAvailableText: TextView
@@ -27,7 +27,7 @@ class ReinforcementFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is gameActivityInterface) listener = context
+        if (context is GameActivityInterface) listener = context
     }
 
 
@@ -55,6 +55,7 @@ class ReinforcementFragment : Fragment() {
         fragmentView.findViewById<Button>(R.id.plusReInButton).setOnClickListener {
             addTroops()
         }
+
 
         fragmentView.findViewById<Button>(R.id.minusReInButton).setOnClickListener {
             minTroops()
@@ -114,6 +115,7 @@ class ReinforcementFragment : Fragment() {
         } else {
             listener.setReinforcement(countrySelected, troopsSelected)
             updateTroopsSelected(0)
+            listener.updateButtons()
             if(troopsAvailable == 0) {
                 listener.changePhase("attack")
                 listener.getAttackFragment()
