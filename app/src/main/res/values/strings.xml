@@ -18,7 +18,7 @@
     <string name="cancel">Cancel</string>
     <string name="attack_from">Attack from:</string>
     <string name="target_country">Target country:</string>
-    <string name="troops_left_in_attacking_country">Troops left in attacking country</string>
+    <string name="troops_left_in_attacking_country">Troops left:</string>
     <string name="attacking_troops">Attacking troops:</string>
     <string name="move_from">Move from:</string>
     <string name="move_to">Move to:</string>
@@ -33,4 +33,8 @@
     <string name="reply_title">Reply_title</string>
     <string name="signature_title">Signature_title</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="done">Done</string>
+    <string name="troops_left">Troops left:</string>
+    <string name="move">Move!</string>
+    <string name="player_name"><![CDATA[<player name>]]></string>
 </resources>

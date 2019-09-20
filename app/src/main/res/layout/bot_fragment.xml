@@ -2,18 +2,16 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pergament"
-    android:isScrollContainer="false"
     android:orientation="vertical">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#00000000"
+        android:background="#000000"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -22,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#000000"
             app:srcCompat="@drawable/phase_1" />
     </LinearLayout>
 
@@ -35,19 +32,17 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/descriptor_troop"
+            android:id="@+id/playerTextD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="@string/troops_available" />
+            android:maxLines="1"
+            android:text="Player: " />
 
         <TextView
-            android:id="@+id/troopsAvailableReIn"
-            android:layout_width="29dp"
+            android:id="@+id/playerNameText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#BFF83B"
-            android:gravity="center|center_horizontal"
-            android:text="42"
+            android:text="@string/player_name"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -60,17 +55,32 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/sentToText"
-            android:layout_width="57dp"
+            android:id="@+id/actionTextD"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/target" />
+            android:gravity="left"
+            android:text="Action: " />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/targetCountryReIn"
+            android:id="@+id/actionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_country"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:background="#EBD2DB"
+            android:lineSpacingExtra="8sp"
+            android:minWidth="200dp"
+            android:minLines="3"
+            android:text="..." />
     </LinearLayout>
 
     <LinearLayout
@@ -80,63 +90,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/plusReInButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="@string/plus" />
-
-        <TextView
-            android:id="@+id/nrOfTroopsSelectedReIn"
-            android:layout_width="47dp"
-            android:layout_height="25dp"
-            android:background="#BFF83B"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minHeight="40dp"
-            android:text="0"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/minusReInButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="@string/minus" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/dispatchButton"
+            android:id="@+id/okButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dispatch" />
+            android:text="@android:string/ok" />
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/abortButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" />
 
 
 </LinearLayout>

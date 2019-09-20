@@ -16,7 +16,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/phaseImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -32,7 +32,7 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/sourceText"
+            android:id="@+id/playerTextD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -55,7 +55,7 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/targetText"
+            android:id="@+id/phaseTextD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -78,7 +78,7 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/selectText"
+            android:id="@+id/actionTextD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
@@ -166,7 +166,7 @@
             android:id="@+id/skipAttackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/skip_step" />
+            android:text="@string/done" />
     </LinearLayout>
 
     <LinearLayout

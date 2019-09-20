@@ -16,7 +16,6 @@ class AttackFragment : Fragment() {
 
     private lateinit var listener: GameActivityInterface
 
-    var troopsAvailable = 0
     var troopsSelected = 0
     var troopsLeft = 0
     var sourceCountry = NO_SELECTION
@@ -61,8 +60,9 @@ class AttackFragment : Fragment() {
         }
 
         fragmentView.findViewById<Button>(R.id.skipAttackButton).setOnClickListener {
-            listener.toastIt("test button .,...................................")
             listener.getRelocationFragment()
+            listener.updateButtons()
+            listener.changePhase("relocation")
             //TODO: PopUp "do you really want to skip / goto next phase
         }
         updateTextViews()
@@ -74,14 +74,14 @@ class AttackFragment : Fragment() {
             sourceCountry == NO_SELECTION -> listener.toastIt("select country")
             targetCountry == NO_SELECTION -> listener.toastIt("select target")
             troopsSelected < 1 -> listener.toastIt("select troops")
-            else -> listener.attack(sourceCountry, targetCountry, troopsSelected)
+            else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
         }
     }
 
     private fun addTroops(){
         when {
-            troopsAvailable < 2 -> listener.toastIt("no troops for attack available in selected country")
-            troopsLeft < 1 -> listener.toastIt("no troops left for attack")
+            //troopsinCountry < 2 -> listener.toastIt("no troops for attack available in selected country")
+            troopsLeft < 2 -> listener.toastIt("no troops left for attack")
             else -> {
                 troopsLeft--
                 troopsSelected++
@@ -110,8 +110,7 @@ class AttackFragment : Fragment() {
 
     fun updateSourceCountry(countryId: String){
         sourceCountry = countryId
-        troopsAvailable = listener.getCountryById(countryId)?.count ?: 0
-        troopsLeft = troopsAvailable
+        troopsLeft = listener.getCountryById(countryId)?.count ?: 0
         troopsSelected = 0
         updateTextViews()
     }

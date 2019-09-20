@@ -116,8 +116,9 @@ class GameInitializer(val players: MutableList<Player>, private val gameState: S
                     //Check if player has not reached max amount of assigned countries
                     if (distributionList[player] < minCountryPerPlayer + moduloCountry) {
                         assignCountry(continent, country, player)
+                        distributionList[player]++
                         //If a country from the modulo was assigned, reduce moduloCounty by one
-                        if (distributionList[player] >= minCountryPerPlayer) moduloCountry--
+                        if (distributionList[player] > minCountryPerPlayer)  moduloCountry--
                         assigned = true
                     }
                 }

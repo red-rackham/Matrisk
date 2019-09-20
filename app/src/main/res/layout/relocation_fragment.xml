@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pergament"
@@ -17,7 +16,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/phaseImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -83,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="@string/troops_available" />
+            android:text="@string/troops_left" />
 
         <TextView
             android:id="@+id/troopsAvailableMove"
@@ -91,7 +90,7 @@
             android:layout_height="wrap_content"
             android:background="#BFF83B"
             android:gravity="center|center_horizontal"
-            android:text="7"
+            android:text="0"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -116,7 +115,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:minHeight="40dp"
-            android:text="1"
+            android:text="0"
             android:textStyle="bold" />
 
         <Button
@@ -137,7 +136,7 @@
             android:id="@+id/moveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Move!" />
+            android:text="@string/move" />
     </LinearLayout>
 
 
@@ -164,21 +163,14 @@
             android:id="@+id/skipMoveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/skip_step" />
+            android:text="@string/done" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/TestFragmentChangeButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="goToNextFragment" />
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
 
 </LinearLayout>

@@ -9,9 +9,11 @@ interface GameActivityInterface {
     fun getAttackFragment()
     fun getRelocationFragment()
     fun getReinforcementFragment()
+    fun getBotFragment()
     fun toastIt(bread: String)
     fun setReinforcement(countrySelected: String, troops: Int)
-    fun attack(source: String, target: String, troops: Int)
+    fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft:Int)
+    fun move(source: String, target: String, troops: Int)
     fun updateButtons()
     fun changePhase(phase: String)
     fun getButtonById(buttonId: String) : Button?

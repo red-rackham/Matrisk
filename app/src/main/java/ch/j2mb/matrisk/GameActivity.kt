@@ -23,30 +23,31 @@ import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 
 class GameActivity : AppCompatActivity(), GameActivityInterface {
 
-    val fragmentManager: FragmentManager = supportFragmentManager
+    private val fragmentManager: FragmentManager = supportFragmentManager
     private lateinit var playerList: MutableList<Player>
 
-    var phase = "initialize game"
+    private var phase = "initialize game"
     //pointer to player in players<> that is now on the move
-    var moveOfPlayer = 0
-    var round: Int = 0
-    var continentList = ContinentList()
+    private var moveOfPlayer = 0
+    private var round: Int = 0
+    private var continentList = ContinentList()
 
     lateinit var reinforcementFragment: ReinforcementFragment
     lateinit var attackFragment: AttackFragment
     lateinit var relocationFragment: RelocationFragment
+    lateinit var botFragment: BotFragment
+
     lateinit var battleGround: BattleGround
     lateinit var attackPopupWindow: PopupWindow
 
-    var reinforcementFragID: Int = 0
-    var attackFragID: Int = 0
-    var relocationFragID: Int = 0
+    private var attackFragID: Int = 0
+    private var relocationFragID: Int = 0
+    private var botFragmentID: Int = 0
 
     lateinit var a11: Button
     lateinit var a12: Button
@@ -96,7 +97,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     lateinit var continents: List<List<Button>>
 
 
-    val initialGameState: String = "start_state.json"
+    private val initialGameState: String = "start_state.json"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,26 +188,13 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     /*
     *Function to get Players, can be extended if more players allowed
      */
-    fun getPlayers(): MutableList<Player> {
+    private fun getPlayers(): MutableList<Player> {
         val playerA = Player("A", "blue", false, null)
         val playerB = Player("B", "red", false, 1)
         return mutableListOf(playerA, playerB)
     }
 
-    override fun setReinforcement(countrySelected: String, troops: Int) {
-        for (i in continents.indices) {
-            for (j in continents[i].indices) {
-                if (getButtonId(continents[i][j]) == countrySelected) {
-                    for (k in 0 until troops) increaseTroops(continents[i][j])
-                    var count = continentList.continents[i].countries[j].count + troops
-                    continentList.continents[i].countries[j].count = count
-                }
-            }
-        }
-    }
-
-
-    fun buttonClicked(button: Button) {
+    private fun buttonClicked(button: Button) {
 
         //Check if selected country is under control of player
         var ownButton: Boolean = false
@@ -227,6 +215,8 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                         updateButtons()
                         changeButtonToWhite(button)
                         reinforcementFragment.updateCountrySelected(buttonID)
+                    } else {
+                        toastIt("not your country!")
                     }
                 }
 
@@ -257,17 +247,173 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                     }
                 }
                 "relocation" -> {
+                    when (ownButton) {
+                        true -> {
+                            val sourceCountryId = relocationFragment.sourceCountry
+                            updateButtons()
+                            when (relocationFragment.updateCountry(buttonID)) {
+                                "source" -> changeButtonToWhite(button)
+                                "target" -> {
+                                    if (relocationCheck(sourceCountryId, buttonID)) {
+                                        changeButtonToWhite(getButtonById(sourceCountryId))
+                                        changeButtonToBlack(button)
+                                    } else {
+                                        toastIt("move from ${sourceCountryId} to ${buttonID} is not allowed. Countries must be connected!")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            toastIt("wait for your turn")
+        }
+    }
+
+    override fun setReinforcement(countrySelected: String, troops: Int) {
+        for (i in continents.indices) {
+            for (j in continents[i].indices) {
+                if (getButtonId(continents[i][j]) == countrySelected) {
+                    for (k in 0 until troops) increaseTroops(continents[i][j])
+                    var count = continentList.continents[i].countries[j].count + troops
+                    continentList.continents[i].countries[j].count = count
                 }
             }
         }
     }
 
-    fun attackCheck(source: String, target: String): Boolean {
+
+    private fun relocationCheck(source: String, target: String): Boolean {
         //TODO: Implement Check
         return true
     }
 
-    fun getButtonId(button: Button): String {
+    private fun attackCheck(source: String, target: String): Boolean {
+        //TODO: Implement Check
+        return true
+    }
+
+
+    override fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft: Int) {
+        val counterparties = listOf(getCountryById(source)!!, getCountryById(target)!!)
+        battleGround = BattleGround(counterparties, troopsAttacking, troopsLeft, this)
+    }
+
+    override fun move(source: String, target: String, troops: Int) {
+        val sourceCountry = getCountryById(source)
+        val targetCountry = getCountryById(target)
+        sourceCountry!!.count -= troops
+        targetCountry!!.count += troops
+        updateCountries(listOf(sourceCountry, targetCountry))
+        updateButtons()
+
+        changePhase("bot")
+        moveOfPlayer++
+        getBotFragment()
+    }
+
+    override fun toastIt(bread: String) {
+        Toast.makeText(this@GameActivity, bread, Toast.LENGTH_LONG).show()
+    }
+
+    override fun getReinforcementFragment() {
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        reinforcementFragment = ReinforcementFragment().newInstance()
+
+        if (fragmentManager.fragments.size == 0) {
+            transaction.add(R.id.fragment_container, reinforcementFragment)
+        } else {
+            transaction.replace(R.id.fragment_container, reinforcementFragment)
+        }
+        transaction.commit()
+    }
+
+    override fun getAttackFragment() {
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        attackFragment = AttackFragment().newInstance()
+        transaction.replace(R.id.fragment_container, attackFragment)
+        transaction.commit()
+        attackFragID = attackFragment.id
+    }
+
+    override fun getRelocationFragment() {
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        relocationFragment = RelocationFragment().newInstance()
+        transaction.replace(R.id.fragment_container, relocationFragment)
+        transaction.commit()
+        relocationFragID = relocationFragment.id
+    }
+
+    override fun getBotFragment() {
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        botFragment = BotFragment().newInstance()
+        transaction.replace(R.id.fragment_container, botFragment)
+        transaction.commit()
+        botFragmentID = botFragment.id
+    }
+
+
+    override fun changePhase(phase: String) {
+        this.phase = phase
+    }
+
+    override fun showAttackPopup(): View {
+
+        val view: View = findViewById(android.R.id.content)
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popUpView = inflater.inflate(R.layout.attack_popup, null)
+
+        popUpView.findViewById<Button>(R.id.attackButtonPop).setOnClickListener {
+            val counterparties = battleGround.fight()
+            if (counterparties != null) {
+                updateCountries(counterparties)
+                closeAttackPopup()
+                updateButtons()
+                //TODO:SHOW WINNER IN TOAST OR POPUP
+            }
+        }
+
+        popUpView.findViewById<Button>(R.id.fastAttackButtonPop).setOnClickListener {
+            val counterparties = battleGround.fastfight()
+            if (counterparties != null) {
+                updateCountries(counterparties)
+                closeAttackPopup()
+                updateButtons()
+                //TODO:SHOW WINNER IN TOAST OR POPUP
+            }
+
+        }
+
+        popUpView.findViewById<Button>(R.id.withdrawalButtonPop).setOnClickListener {
+            battleGround.withdrawal()
+            updateButtons()
+        }
+
+        val width = 800
+        val height = 800
+        val focusable = true
+        attackPopupWindow = PopupWindow(popUpView, width, height, focusable)
+
+        attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        return popUpView
+    }
+
+    override fun closeAttackPopup() {
+        attackPopupWindow.dismiss()
+    }
+
+    fun updateCountries(pairOfCountries: List<Country?>) {
+        if (pairOfCountries != null)
+            for (i in 0..1) {
+                val country = getCountryById(pairOfCountries[i]!!.name)
+                country?.player = pairOfCountries[i]!!.player
+                country?.count = pairOfCountries[i]!!.count
+                //country?.modified = true
+            }
+    }
+
+    private fun getButtonId(button: Button): String {
         //This is somehow ugly but no better solution was found how to get the ID
         var buttonID = button.toString()
         buttonID = buttonID.substring(buttonID.length - 4, buttonID.length - 1).toUpperCase()
@@ -322,96 +468,6 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             troops++
             button.text = troops.toString()
         }
-    }
-
-    fun decreaseTroops(button: Button?) {
-        if (button != null) {
-            var troops: Int = button.text.toString().toInt()
-            troops--
-            button.text = troops.toString()
-        }
-    }
-
-
-    override fun attack(source: String, target: String, troops: Int) {
-        val counterparties = listOf(getCountryById(source)!!, getCountryById(target)!!)
-        battleGround = BattleGround(counterparties, troops, this)
-    }
-
-    override fun toastIt(bread: String) {
-        Toast.makeText(this@GameActivity, bread, Toast.LENGTH_LONG).show()
-    }
-
-    override fun getReinforcementFragment() {
-        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        reinforcementFragment = ReinforcementFragment().newInstance()
-
-        if (fragmentManager.fragments.size == 0) {
-            transaction.add(R.id.fragment_container, reinforcementFragment)
-        } else {
-            transaction.replace(R.id.fragment_container, reinforcementFragment)
-        }
-        transaction.commit()
-    }
-
-    override fun getAttackFragment() {
-        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        attackFragment = AttackFragment().newInstance()
-        transaction.replace(R.id.fragment_container, attackFragment)
-        transaction.commit()
-        attackFragID = attackFragment.id
-    }
-
-    override fun getRelocationFragment() {
-        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        relocationFragment = RelocationFragment().newInstance()
-        transaction.replace(R.id.fragment_container, relocationFragment)
-        transaction.commit()
-        relocationFragID = relocationFragment.id
-    }
-
-    override fun changePhase(phase: String) {
-        this.phase = phase
-    }
-
-    override fun showAttackPopup() : View {
-        val view: View = findViewById(R.id.content)
-        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popUpView = inflater.inflate(R.layout.attack_popup, null)
-
-        findViewById<Button>(R.id.attackButtonPop).setOnClickListener {
-                updateAfterFight(battleGround.fight())
-        }
-
-        findViewById<Button>(R.id.fastAttackButtonPop).setOnClickListener {
-            updateAfterFight(battleGround.fastfight())
-        }
-
-        findViewById<Button>(R.id.withdrawalButtonPop).setOnClickListener {
-            battleGround.withdrawal()
-        }
-
-        val width = 600
-        val height = 800
-        val focusable = false
-        attackPopupWindow = PopupWindow(popUpView, width, height, focusable)
-
-        attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-        return popUpView
-    }
-
-    override fun closeAttackPopup() {
-        attackPopupWindow.dismiss()
-    }
-
-    fun updateAfterFight(counterparties: List<Country>?) {
-        if (counterparties != null)
-            for (i in 0..1) {
-                val country = getCountryById(counterparties[i].name)
-                country?.player = counterparties[i].player
-                country?.count = counterparties[i].count
-                //country?.modified = true
-            }
     }
 
 
