@@ -476,9 +476,9 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
      */
 
     fun jsontest() {
-        val jsonHandler = JsonHandler()
-        var continentList: ContinentList?
-        continentList = jsonHandler.getCountriesFromGson("start_state.json", this)
+
+        var continentList: ContinentList? =
+            JsonHandler.getCountriesFromGson("start_state.json", this)
         if (continentList == null) {
             Log.e("geht nicht", "alles null")
         } else {

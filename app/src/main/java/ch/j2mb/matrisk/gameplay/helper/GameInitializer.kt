@@ -69,8 +69,7 @@ class GameInitializer(val players: MutableList<Player>, private val gameState: S
     init {
 
         //Get initial set of countries/continents
-        val jsonHandler = JsonHandler()
-        val tempList = jsonHandler.getCountriesFromGson(gameState, context)
+        val tempList = JsonHandler.getCountriesFromGson(gameState, context)
         if(tempList != null) {
             listOfContinents = tempList
         } else {
