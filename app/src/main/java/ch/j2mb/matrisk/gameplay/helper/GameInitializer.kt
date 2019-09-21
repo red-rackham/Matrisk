@@ -74,7 +74,7 @@ class GameInitializer(val players: MutableList<Player>, private val gameState: S
         if(tempList != null) {
             listOfContinents = tempList
         } else {
-            Log.e("Initalizer", "listOfContinents == 0 !!!")
+            Log.e("Initalizer", "listOfContinents == null !!!")
         }
 
         if(newGame) {

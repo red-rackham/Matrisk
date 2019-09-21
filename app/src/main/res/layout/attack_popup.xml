@@ -158,14 +158,14 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/dice_1" />
+                        app:srcCompat="@drawable/empty" />
 
                     <ImageView
                         android:id="@+id/defenderDice1"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/dice_2" />
+                        app:srcCompat="@drawable/empty" />
 
                 </TableRow>
 
@@ -182,14 +182,14 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/dice_3" />
+                        app:srcCompat="@drawable/empty" />
 
                     <ImageView
                         android:id="@+id/defenderDice2"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/dice_4" />
+                        app:srcCompat="@drawable/empty" />
                 </TableRow>
 
                 <TableRow
@@ -205,7 +205,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/dice_6" />
+                        app:srcCompat="@drawable/empty" />
 
                 </TableRow>
 

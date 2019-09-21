@@ -69,13 +69,15 @@ class AttackFragment : Fragment() {
         return fragmentView
     }
 
-    private fun attack() {
-        when {
-            sourceCountry == NO_SELECTION -> listener.toastIt("select country")
-            targetCountry == NO_SELECTION -> listener.toastIt("select target")
-            troopsSelected < 1 -> listener.toastIt("select troops")
-            else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
-        }
+    /**
+     *
+     */
+
+    private fun attack() = when {
+        sourceCountry == NO_SELECTION -> listener.toastIt("select country")
+        targetCountry == NO_SELECTION -> listener.toastIt("select target")
+        troopsSelected < 1 -> listener.toastIt("select troops")
+        else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
     }
 
     private fun addTroops(){
