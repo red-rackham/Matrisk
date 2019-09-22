@@ -18,7 +18,7 @@ class ReinforcementFragment : Fragment() {
     private lateinit var listener: GameActivityInterface
 
     //TODO: SET TO 0, TESTING IS 5
-    var troopsAvailable = 5
+    var troopsAvailable = 0
     var troopsSelected = 0
     var countrySelected = NO_SELECTION
     private lateinit var troopsAvailableText: TextView
@@ -64,6 +64,7 @@ class ReinforcementFragment : Fragment() {
         fragmentView.findViewById<Button>(R.id.abortButton).setOnClickListener {
             cancel()
         }
+        listener.setTroopsForReinforcement()
         return fragmentView
     }
 

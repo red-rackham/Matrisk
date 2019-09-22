@@ -43,8 +43,8 @@ class BotFragment : Fragment() {
         okButton = fragmentView.findViewById(R.id.okButton)
 
         fragmentView.findViewById<Button>(R.id.okButton).setOnClickListener {
-            listener.getRelocationFragment()
             listener.updateButtons()
+            listener.nextPlayer()
         }
 
         return fragmentView

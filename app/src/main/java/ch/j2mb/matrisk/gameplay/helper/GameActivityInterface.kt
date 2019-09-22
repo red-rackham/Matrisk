@@ -20,5 +20,7 @@ interface GameActivityInterface {
     fun getCountryById(countryId: String) : Country?
     fun showAttackPopup() : View
     fun closeAttackPopup()
+    fun setTroopsForReinforcement()
+    fun nextPlayer()
 
 }

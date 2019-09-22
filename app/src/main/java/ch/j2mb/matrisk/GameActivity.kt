@@ -20,10 +20,11 @@ import ch.j2mb.matrisk.gameplay.helper.BattleGround
 import ch.j2mb.matrisk.gameplay.helper.GameInitializer
 import ch.j2mb.matrisk.gameplay.helper.JsonHandler
 import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
+import ch.j2mb.matrisk.gameplay.helper.ai_machine.BiDirectionalLinkList
+import ch.j2mb.matrisk.gameplay.helper.ai_machine.MinimalRisk
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
-import kotlinx.coroutines.delay
 
 
 class GameActivity : AppCompatActivity(), GameActivityInterface {
@@ -36,6 +37,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     private var moveOfPlayer = 0
     private var round: Int = 0
     private var continentList = ContinentList()
+    private var biDirectionalLinkList = BiDirectionalLinkList()
 
     lateinit var reinforcementFragment: ReinforcementFragment
     lateinit var attackFragment: AttackFragment
@@ -48,6 +50,9 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     private var attackFragID: Int = 0
     private var relocationFragID: Int = 0
     private var botFragmentID: Int = 0
+
+    private var continentBonus = 3
+    private var troopsPerCountryBonus = 1
 
     lateinit var a11: Button
     lateinit var a12: Button
@@ -104,7 +109,6 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        getReinforcementFragment()
 
         playerList = getPlayers()
 
@@ -168,7 +172,10 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         val gameInitializer = GameInitializer(playerList, initialGameState, true, this)
         continentList = gameInitializer.listOfContinents
         playerList = gameInitializer.players
+        biDirectionalLinkList = gameInitializer.biDirectionalLinkList
+
         phase = "reinforcement"
+        getReinforcementFragment()
         updateButtons()
     }
 
@@ -190,12 +197,12 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
      */
     private fun getPlayers(): MutableList<Player> {
         val playerA = Player("A", "blue", false, null)
-        val playerB = Player("B", "red", false, 1)
+        val playerB = Player("B", "red", true, 1)
         return mutableListOf(playerA, playerB)
     }
 
     private fun buttonClicked(button: Button) {
-
+        val buttonID = getButtonId(button)
         //Check if selected country is under control of player
         var ownButton: Boolean = false
         for (continent in continentList.continents)
@@ -206,68 +213,73 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         //only do something if it is the turn of the human player
         if (!playerList[moveOfPlayer].bot) {
 
-            val buttonID = getButtonId(button)
-            toastIt(buttonID)
-
             when (phase) {
-                "reinforcement" -> {
-                    if (ownButton) {
-                        updateButtons()
-                        changeButtonToWhite(button)
-                        reinforcementFragment.updateCountrySelected(buttonID)
-                    } else {
-                        toastIt("not your country!")
-                    }
-                }
+                "reinforcement" -> buttonClickedReinforcementPhase(button, ownButton, buttonID)
+                "attack" -> buttonClickedAttackPhase(button, ownButton, buttonID)
+                "relocation" -> buttonClickedRelocationPhase(button, ownButton, buttonID)
+                else -> toastIt("wait for your turn")
+            }
+        }
+    }
 
-                "attack" -> {
-                    when (ownButton) {
-                        true -> {
-                            attackFragment.updateSourceCountry(buttonID)
-                            attackFragment.updateTargetCountry(NO_SELECTION)
-                            updateButtons()
-                            changeButtonToWhite(button)
-                        }
-                        false -> {
-                            when {
-                                (attackFragment.sourceCountry == NO_SELECTION) -> toastIt("choose first attacking country")
-                                (attackCheck(
-                                    attackFragment.sourceCountry,
-                                    buttonID
-                                )) -> {
-                                    updateButtons()
-                                    val attackButton = getButtonById(attackFragment.sourceCountry)
-                                    attackButton?.let { changeButtonToWhite(attackButton) }
-                                    changeButtonToBlack(button)
-                                    attackFragment.updateTargetCountry(buttonID)
-                                }
-                                else -> toastIt("selection not valid")
-                            }
-                        }
+    private fun buttonClickedReinforcementPhase(
+        button: Button,
+        ownButton: Boolean,
+        buttonID: String
+    ) {
+        if (ownButton) {
+            updateButtons()
+            changeButtonToWhite(button)
+            reinforcementFragment.updateCountrySelected(buttonID)
+        } else {
+            toastIt("not your country!")
+        }
+    }
+
+    private fun buttonClickedAttackPhase(button: Button, ownButton: Boolean, buttonID: String) {
+        when (ownButton) {
+            true -> {
+                attackFragment.updateSourceCountry(buttonID)
+                attackFragment.updateTargetCountry(NO_SELECTION)
+                updateButtons()
+                changeButtonToWhite(button)
+            }
+            false -> {
+                when {
+                    (attackFragment.sourceCountry == NO_SELECTION) -> toastIt("choose first attacking country")
+                    (attackCheck(
+                        attackFragment.sourceCountry,
+                        buttonID
+                    )) -> {
+                        updateButtons()
+                        val attackButton = getButtonById(attackFragment.sourceCountry)
+                        attackButton?.let { changeButtonToWhite(attackButton) }
+                        changeButtonToBlack(button)
+                        attackFragment.updateTargetCountry(buttonID)
                     }
+                    else -> toastIt("selection not valid")
                 }
-                "relocation" -> {
-                    when (ownButton) {
-                        true -> {
-                            val sourceCountryId = relocationFragment.sourceCountry
-                            updateButtons()
-                            when (relocationFragment.updateCountry(buttonID)) {
-                                "source" -> changeButtonToWhite(button)
-                                "target" -> {
-                                    if (relocationCheck(sourceCountryId, buttonID)) {
-                                        changeButtonToWhite(getButtonById(sourceCountryId))
-                                        changeButtonToBlack(button)
-                                    } else {
-                                        toastIt("move from ${sourceCountryId} to ${buttonID} is not allowed. Countries must be connected!")
-                                    }
-                                }
-                            }
+            }
+        }
+    }
+
+    private fun buttonClickedRelocationPhase(button: Button, ownButton: Boolean, buttonID: String) {
+        when (ownButton) {
+            true -> {
+                val sourceCountryId = relocationFragment.sourceCountry
+                updateButtons()
+                when (relocationFragment.updateCountry(buttonID)) {
+                    "source" -> changeButtonToWhite(button)
+                    "target" -> {
+                        if (relocationCheck(sourceCountryId, buttonID)) {
+                            changeButtonToWhite(getButtonById(sourceCountryId))
+                            changeButtonToBlack(button)
+                        } else {
+                            toastIt("move from ${sourceCountryId} to ${buttonID} is not allowed. Countries must be connected!")
                         }
                     }
                 }
             }
-        } else {
-            toastIt("wait for your turn")
         }
     }
 
@@ -308,9 +320,102 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         updateCountries(listOf(sourceCountry, targetCountry))
         updateButtons()
 
-        changePhase("bot")
-        moveOfPlayer++
-        getBotFragment()
+        nextPlayer()
+    }
+
+    fun botPhase() {
+        val player = playerList[moveOfPlayer].name
+        var newBoard: String
+        var newContinentList: ContinentList
+
+        //Reinforcement phase of bot
+        val reinforcementTroops = getTroopsForReinforcement(player)
+        newBoard = MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
+        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+        //Show Bot-Log
+        for ((i, continent) in continentList.continents.withIndex())
+            for ((j, country) in continent.countries.withIndex())
+                if (country.modified) {
+                    val newTroops =
+                        newContinentList.continents[i].countries[j].count - country.count
+                    botFragment.addBotAction("${player} placed ${newTroops} on ${country.name}")
+                }
+        continentList = newContinentList
+        updateButtons()
+
+        //Attack phase of bot
+        newBoard = MinimalRisk.attack(getJsonForBot(), player)
+        continentList = JsonHandler.getContinentListFromJson(newBoard)
+        for (continent in continentList.continents)
+            for (country in continent.countries)
+                if (country.modified) botFragment.addBotAction("${player} conquered ${country.name}")
+        updateButtons()
+
+        //Relocation phase of bot
+        newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
+        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+        var fromCountry = ""
+        var toCountry = ""
+        var troopsMoved = 0
+        for ((i, continent) in continentList.continents.withIndex())
+            for ((j, country) in continent.countries.withIndex())
+                if (country.modified) {
+                    val troops = newContinentList.continents[i].countries[j].count - country.count
+                    if (troops < 0) {
+                        fromCountry = country.name
+                    } else {
+                        toCountry = country.name
+                        troopsMoved = troops
+                    }
+                }
+        botFragment.addBotAction("${player} moved ${troopsMoved} troops from ${fromCountry} to ${toCountry}")
+        updateButtons()
+
+    }
+
+    override fun nextPlayer() {
+
+        if (moveOfPlayer == playerList.size - 1) moveOfPlayer = 0 else moveOfPlayer++
+
+        if (playerList[moveOfPlayer].bot) {
+            changePhase("bot")
+            getBotFragment()
+            botPhase()
+        } else {
+            changePhase("reinforcement")
+            getReinforcementFragment()
+        }
+    }
+
+
+    fun getJsonForBot(): String {
+        val countryGraphObject = JsonHandler.gsonTemplateConverter(
+            continentList,
+            biDirectionalLinkList.bidirectionalLinks
+        )
+        return JsonHandler.getJsonFromCountryGraph(countryGraphObject)
+    }
+
+    fun getTroopsForReinforcement(player: String): Int {
+        var troops = 0
+        for (continent in continentList.continents) {
+            var countCountriesInContinent = 0
+            var ownCountries = 0
+
+            for (country in continent.countries) {
+                countCountriesInContinent++
+                if (country.player == player) ownCountries++
+            }
+            //Continent-Bonus: check if all countries on continent are under of control of player
+            if (ownCountries == countCountriesInContinent) ownCountries += continentBonus
+            troops += ownCountries * troopsPerCountryBonus
+        }
+        return troops
+    }
+
+    override fun setTroopsForReinforcement() {
+        val troops = getTroopsForReinforcement(playerList[moveOfPlayer].name)
+        reinforcementFragment.updateTroopsAvailable(troops)
     }
 
     override fun toastIt(bread: String) {
@@ -467,26 +572,6 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             var troops: Int = button.text.toString().toInt()
             troops++
             button.text = troops.toString()
-        }
-    }
-
-
-    /**
-     * TestStuff
-     */
-
-    fun jsontest() {
-
-        var continentList: ContinentList? =
-            JsonHandler.getCountriesFromGson("start_state.json", this)
-        if (continentList == null) {
-            Log.e("geht nicht", "alles null")
-        } else {
-            for (continent in continentList.continents) {
-                for (country in continent.countries) {
-                    println(country.name)
-                }
-            }
         }
     }
 

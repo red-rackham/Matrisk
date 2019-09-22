@@ -2,6 +2,7 @@ package ch.j2mb.matrisk.gameplay.helper
 
 import android.content.Context
 import android.util.Log
+import ch.j2mb.matrisk.gameplay.helper.ai_machine.BiDirectionalLinkList
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Player
 import kotlin.random.Random.Default.nextInt
@@ -65,15 +66,17 @@ class GameInitializer(val players: MutableList<Player>, private val gameState: S
      */
 
     lateinit var listOfContinents: ContinentList
+    lateinit var biDirectionalLinkList : BiDirectionalLinkList
 
     init {
 
         //Get initial set of countries/continents
-        val tempList = JsonHandler.getCountriesFromGson(gameState, context)
-        if(tempList != null) {
-            listOfContinents = tempList
+        val jsonFile = JsonHandler.getJsonFromFile(gameState, context)
+        if(jsonFile != null) {
+            listOfContinents = JsonHandler.getContinentListFromJson(jsonFile)
+            biDirectionalLinkList = JsonHandler.getBidirectionalLinkfromJson(jsonFile)
         } else {
-            Log.e("Initalizer", "listOfContinents == null !!!")
+            Log.e("Initalizer", "JSON file not found")
         }
 
         if(newGame) {

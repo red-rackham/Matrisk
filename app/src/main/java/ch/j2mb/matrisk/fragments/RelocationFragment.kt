@@ -62,7 +62,7 @@ class RelocationFragment : Fragment() {
         }
         fragmentView.findViewById<Button>(R.id.skipMoveButton).setOnClickListener {
             listener.updateButtons()
-            listener.getBotFragment()
+            listener.nextPlayer()
             //TODO: PopUp "do you really want to skip / goto next phase
         }
         updateTextViews()
