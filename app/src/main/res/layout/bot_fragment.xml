@@ -76,11 +76,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#EBD2DB"
+            android:background="#220B0B"
             android:lineSpacingExtra="8sp"
-            android:minWidth="200dp"
-            android:minLines="3"
-            android:text="..." />
+            android:minWidth="300dp"
+            android:minLines="20"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
+            android:textAlignment="viewStart"
+            android:textColor="#5FAF1D" />
     </LinearLayout>
 
     <LinearLayout

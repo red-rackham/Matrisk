@@ -73,14 +73,17 @@ class AttackFragment : Fragment() {
      *
      */
 
-    private fun attack() = when {
-        sourceCountry == NO_SELECTION -> listener.toastIt("select country")
-        targetCountry == NO_SELECTION -> listener.toastIt("select target")
-        troopsSelected < 1 -> listener.toastIt("select troops")
-        else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
+    private fun attack() {
+        when {
+            sourceCountry == NO_SELECTION -> listener.toastIt("select country")
+            targetCountry == NO_SELECTION -> listener.toastIt("select target")
+            troopsSelected < 1 -> listener.toastIt("select troops")
+            else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
+        }
+        clearSelection()
     }
 
-    private fun addTroops(){
+    private fun addTroops() {
         when {
             //troopsinCountry < 2 -> listener.toastIt("no troops for attack available in selected country")
             troopsLeft < 2 -> listener.toastIt("no troops left for attack")
@@ -92,7 +95,7 @@ class AttackFragment : Fragment() {
         }
     }
 
-    private fun minTroops(){
+    private fun minTroops() {
         when {
             troopsSelected < 1 -> listener.toastIt("no troops selected")
             else -> {
@@ -103,17 +106,26 @@ class AttackFragment : Fragment() {
         }
     }
 
-    private fun updateTextViews(){
+    fun clearSelection() {
+        troopsSelected = 0
+        troopsLeft = 0
+        sourceCountry = NO_SELECTION
+        targetCountry = NO_SELECTION
+        updateTextViews()
+    }
+
+    private fun updateTextViews() {
         troopsSelectedText.text = troopsSelected.toString()
         troopsLeftText.text = troopsLeft.toString()
         sourceCountryText.text = sourceCountry
         targetCountryText.text = targetCountry
     }
 
-    fun updateSourceCountry(countryId: String){
+    fun updateSourceCountry(countryId: String) {
         sourceCountry = countryId
         troopsLeft = listener.getCountryById(countryId)?.count ?: 0
-        troopsSelected = 0
+        troopsSelected = troopsLeft -1
+        troopsLeft = 1
         updateTextViews()
     }
 

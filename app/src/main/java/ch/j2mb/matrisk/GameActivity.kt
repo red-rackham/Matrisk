@@ -55,7 +55,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     private var botFragmentID: Int = 0
 
     private var continentBonus = 3
-    private var troopsPerCountryBonus = 1
+    private var troopsPerCountryDivisor = 2
 
     lateinit var a11: Button
     lateinit var a12: Button
@@ -102,7 +102,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     lateinit var continentC: List<Button>
     lateinit var continentD: List<Button>
 
-    lateinit var continents: List<List<Button>>
+    lateinit var continentButtonList: List<List<Button>>
 
 
     private val initialGameState: String = "start_state.json"
@@ -160,14 +160,14 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         continentC = listOf(c11, c12, c13, c21, c22, c23, c31, c32, c33)
         continentD = listOf(d11, d12, d13, d21, d22, d23, d31, d32, d33)
 
-        continents = listOf(continentA, continentB, continentC, continentD)
+        continentButtonList = listOf(continentA, continentB, continentC, continentD)
 
-        for (i in continents.indices) {
-            for (j in continents[i].indices) {
-                continents[i][j].setOnClickListener {
-                    buttonClicked(continents[i][j])
+        for (i in continentButtonList.indices) {
+            for (j in continentButtonList[i].indices) {
+                continentButtonList[i][j].setOnClickListener {
+                    buttonClicked(continentButtonList[i][j])
 
-                    Log.d("UI", "touched: ${getButtonId(continents[i][j])}")
+                    Log.d("UI", "touched: ${getButtonId(continentButtonList[i][j])}")
                 }
             }
         }
@@ -186,17 +186,21 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         for ((i, continent) in continentList.continents.withIndex())
             for ((j, country) in continent.countries.withIndex()) {
                 when (country.player) {
-                    playerList[0].name -> changeButtonToBlue(continents[i][j])
-                    playerList[1].name -> changeButtonToRed(continents[i][j])
+                    playerList[0].name -> changeButtonToBlue(continentButtonList[i][j])
+                    playerList[1].name -> changeButtonToRed(continentButtonList[i][j])
                     //TODO: for more players
                 }
-                continents[i][j].text = country.count.toString()
+                continentButtonList[i][j].text = country.count.toString()
             }
     }
 
 
     /*
     *Function to get Players, can be extended if more players allowed
+     */
+
+    /**
+     *
      */
     private fun getPlayers(): MutableList<Player> {
         val playerA = Player("A", "blue", false, null)
@@ -220,9 +224,10 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 "reinforcement" -> buttonClickedReinforcementPhase(button, ownButton, buttonID)
                 "attack" -> buttonClickedAttackPhase(button, ownButton, buttonID)
                 "relocation" -> buttonClickedRelocationPhase(button, ownButton, buttonID)
-                else -> toastIt("wait for your turn")
             }
-        }
+        } else {
+                toastIt("wait for your turn")
+            }
     }
 
     private fun buttonClickedReinforcementPhase(
@@ -234,6 +239,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             updateButtons()
             changeButtonToWhite(button)
             reinforcementFragment.updateCountrySelected(buttonID)
+
         } else {
             toastIt("not your country!")
         }
@@ -250,17 +256,14 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             false -> {
                 when {
                     (attackFragment.sourceCountry == NO_SELECTION) -> toastIt("choose first attacking country")
-                    (attackCheck(
-                        attackFragment.sourceCountry,
-                        buttonID
-                    )) -> {
+                    (attackCheck(attackFragment.sourceCountry, buttonID)) -> {
                         updateButtons()
                         val attackButton = getButtonById(attackFragment.sourceCountry)
                         attackButton?.let { changeButtonToWhite(attackButton) }
                         changeButtonToBlack(button)
                         attackFragment.updateTargetCountry(buttonID)
                     }
-                    else -> toastIt("selection not valid")
+                    else -> toastIt("selection not valid, country must be a neighbour")
                 }
             }
         }
@@ -287,26 +290,81 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     }
 
     override fun setReinforcement(countrySelected: String, troops: Int) {
-        for (i in continents.indices) {
-            for (j in continents[i].indices) {
-                if (getButtonId(continents[i][j]) == countrySelected) {
-                    for (k in 0 until troops) increaseTroops(continents[i][j])
-                    var count = continentList.continents[i].countries[j].count + troops
-                    continentList.continents[i].countries[j].count = count
-                }
-            }
-        }
+
+        //get button
+        for (i in continentButtonList.indices)
+            for (j in continentButtonList[i].indices)
+                if (getButtonId(continentButtonList[i][j]) == countrySelected)
+
+                    //update button in seperate coroutine
+                    GlobalScope.launch {
+                        for (k in 0 until troops) {
+                            increaseTroops(continentButtonList[i][j])
+                            continentList.continents[i].countries[j].count++
+                            this@GameActivity.runOnUiThread(Runnable {
+                                updateButtons()
+                            })
+                            delay(70)
+                        }
+                    }
     }
 
-
     private fun relocationCheck(source: String, target: String): Boolean {
-        //TODO: Implement Check
-        return true
+
+        Log.d("relocationCheck:","source:${source}\t target:${target}")
+
+        var relocationValidity = false
+        //get list of possible targets and check if target country is in that list
+        val countryGraph =
+            JsonHandler.getCountryGraphJson(continentList, biDirectionalLinkList.bidirectionalLinks)
+        val possibleTargetsJson =
+            MinimalRisk.possibleDestinations(countryGraph, playerList[moveOfPlayer].name, source)
+
+        Log.d("relocationCheck:", "MinmalRisk:${possibleTargetsJson}")
+
+        val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
+
+        for (country in countryList.countries) {
+
+            Log.d("attackCheck:", "country in list checked: ${country}")
+
+            if (country.name == target) {
+                relocationValidity = true
+                Log.d("attackCheck:", "country found:${country}")
+            }
+        }
+
+        return relocationValidity
     }
 
     private fun attackCheck(source: String, target: String): Boolean {
-        //TODO: Implement Check
+
         return true
+
+        /**
+        Log.d("attackCheck:","source:${source}\t target:${target}")
+
+        var attackValidity = false
+        //get list of possible targets and check if target country is in that list
+        val countryGraph = JsonHandler.getCountryGraphJson(continentList, biDirectionalLinkList.bidirectionalLinks)
+        val possibleTargetsJson = MinimalRisk.possibleTargetCountries(countryGraph, playerList[moveOfPlayer].name, source)
+
+        Log.d("attackCheck:","MinmalRisk:${possibleTargetsJson}")
+
+        val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
+
+        for(country in countryList.countries) {
+
+            Log.d("attackCheck:", "country in list checked: ${country}")
+
+            if (country.name == target) {
+                attackValidity = true
+                Log.d("attackCheck:","country found:${country}")
+            }
+        }
+
+        return attackValidity
+        **/
     }
 
 
@@ -318,6 +376,8 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     override fun move(source: String, target: String, troops: Int) {
         val sourceCountry = getCountryById(source)
         val targetCountry = getCountryById(target)
+
+        GlobalScope
         sourceCountry!!.count -= troops
         targetCountry!!.count += troops
         updateCountries(listOf(sourceCountry, targetCountry))
@@ -332,53 +392,65 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         var newContinentList: ContinentList
 
 
-        //Reinforcement phase of bot
-        val reinforcementTroops = getTroopsForReinforcement(player)
-        newBoard = MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
-        Log.d("botPhase, reinforcement", "${newBoard}")
-        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
-        //Show Bot-Log
-        for ((i, continent) in continentList.continents.withIndex())
-            for ((j, country) in continent.countries.withIndex())
-                if (country.modified) {
-                    val newTroops =
-                        newContinentList.continents[i].countries[j].count - country.count
-                    botFragment.addBotAction("${player} placed ${newTroops} on ${country.name}")
-                }
-        continentList = newContinentList
-        updateButtons()
+        GlobalScope.launch {
 
-        //Attack phase of bot
-        newBoard = MinimalRisk.attack(getJsonForBot(), player)
-        Log.d("botPhase, attack", "${newBoard}")
-
-        continentList = JsonHandler.getContinentListFromJson(newBoard)
-
-        for (continent in continentList.continents)
-            for (country in continent.countries)
-                if (country.modified) botFragment.addBotAction("${player} conquered ${country.name}")
-        updateButtons()
-
-        //Relocation phase of bot
-        newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
-        Log.d("botPhase, relocation", "${newBoard}")
-        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
-        var fromCountry = ""
-        var toCountry = ""
-        var troopsMoved = 0
-        for ((i, continent) in continentList.continents.withIndex())
-            for ((j, country) in continent.countries.withIndex())
-                if (country.modified) {
-                    val troops = newContinentList.continents[i].countries[j].count - country.count
-                    if (troops < 0) {
-                        fromCountry = country.name
-                    } else {
-                        toCountry = country.name
-                        troopsMoved = troops
+            val reinforcementTroops = getTroopsForReinforcement(player)
+            newBoard =
+                MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
+            Log.d("botPhase, reinforcement", "${newBoard}")
+            newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+            //Show Bot-Log
+            for ((i, continent) in continentList.continents.withIndex())
+                for ((j, country) in continent.countries.withIndex())
+                    if (country.modified) {
+                        val newTroops =
+                            newContinentList.continents[i].countries[j].count - country.count
+                        botFragment.addBotAction("${player} placed ${newTroops} on ${country.name}")
+                        delay(200)
                     }
-                }
-        botFragment.addBotAction("${player} moved ${troopsMoved} troops from ${fromCountry} to ${toCountry}")
-        updateButtons()
+
+            continentList = newContinentList
+            updateButtons()
+
+
+            //Attack phase of bot
+            newBoard = MinimalRisk.attack(getJsonForBot(), player)
+            Log.d("botPhase, attack", "${newBoard}")
+
+            continentList = JsonHandler.getContinentListFromJson(newBoard)
+
+            for (continent in continentList.continents)
+                for (country in continent.countries)
+                    if (country.modified) {
+                        botFragment.addBotAction("${player} conquered ${country.name}")
+                        delay(200)
+                    }
+
+            updateButtons()
+
+            //Relocation phase of bot
+            newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
+            Log.d("botPhase, relocation", "${newBoard}")
+            newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+            var fromCountry = ""
+            var toCountry = ""
+            var troopsMoved = 0
+            for ((i, continent) in continentList.continents.withIndex())
+                for ((j, country) in continent.countries.withIndex())
+                    if (country.modified) {
+                        val troops =
+                            newContinentList.continents[i].countries[j].count - country.count
+                        if (troops < 0) {
+                            fromCountry = country.name
+                        } else {
+                            toCountry = country.name
+                            troopsMoved = troops
+                        }
+                    }
+            botFragment.addBotAction("${player} moved ${troopsMoved} troops from ${fromCountry} to ${toCountry}")
+            updateButtons()
+
+        }
 
     }
 
@@ -425,7 +497,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             }
             //Continent-Bonus: check if all countries on continent are under of control of player
             if (ownCountries == countCountriesInContinent) ownCountries += continentBonus
-            troops += ownCountries * troopsPerCountryBonus
+            troops += ownCountries / troopsPerCountryDivisor
         }
         return troops
     }
@@ -490,8 +562,12 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             val counterparties = battleGround.fight()
             if (counterparties != null) {
                 updateCountries(counterparties)
-                closeAttackPopup()
-                updateButtons()
+
+                GlobalScope.launch {
+                    delay(2000)
+                    closeAttackPopup()
+                    updateButtons()
+                }
                 //TODO:SHOW WINNER IN TOAST OR POPUP
             }
         }
@@ -500,8 +576,13 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             val counterparties = battleGround.fastfight()
             if (counterparties != null) {
                 updateCountries(counterparties)
-                closeAttackPopup()
-                updateButtons()
+
+                GlobalScope.launch {
+                    delay(1000)
+                    closeAttackPopup()
+                    updateButtons()
+                }
+
                 //TODO:SHOW WINNER IN TOAST OR POPUP
             }
 
@@ -543,9 +624,9 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     }
 
     override fun getButtonById(buttonId: String): Button? {
-        for (i in continents.indices)
-            for (j in continents[i].indices)
-                if (getButtonId(continents[i][j]) == buttonId) return continents[i][j]
+        for (i in continentButtonList.indices)
+            for (j in continentButtonList[i].indices)
+                if (getButtonId(continentButtonList[i][j]) == buttonId) return continentButtonList[i][j]
         return null
     }
 

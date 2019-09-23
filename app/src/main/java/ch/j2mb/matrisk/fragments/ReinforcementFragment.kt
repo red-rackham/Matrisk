@@ -2,14 +2,20 @@ package ch.j2mb.matrisk.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import ch.j2mb.matrisk.GameActivity
 import ch.j2mb.matrisk.R
 import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
+import kotlinx.android.synthetic.main.attack_popup.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 const val NO_SELECTION: String = "<please select>"
 
@@ -19,6 +25,7 @@ class ReinforcementFragment : Fragment() {
 
     //TODO: SET TO 0, TESTING IS 5
     var troopsAvailable = 0
+    var troopsLeft = 0
     var troopsSelected = 0
     var countrySelected = NO_SELECTION
     private lateinit var troopsAvailableText: TextView
@@ -47,7 +54,6 @@ class ReinforcementFragment : Fragment() {
         targetCountryText = fragmentView.findViewById(R.id.targetCountryReIn)
         troopsSelectedText = fragmentView.findViewById(R.id.nrOfTroopsSelectedReIn)
 
-
         fragmentView.findViewById<Button>(R.id.dispatchButton).setOnClickListener {
             dispatch()
         }
@@ -56,58 +62,65 @@ class ReinforcementFragment : Fragment() {
             addTroops()
         }
 
-
         fragmentView.findViewById<Button>(R.id.minusReInButton).setOnClickListener {
-            minTroops()
+            removeTroops()
         }
 
         fragmentView.findViewById<Button>(R.id.abortButton).setOnClickListener {
             cancel()
         }
+
         listener.setTroopsForReinforcement()
         return fragmentView
     }
 
+    private fun updateTextViews() {
+        troopsAvailableText.text = troopsLeft.toString()
+        targetCountryText.text = countrySelected
+        troopsSelectedText.text = troopsSelected.toString()
+    }
 
     fun updateCountrySelected(country: String) {
         countrySelected = country
-        targetCountryText.text = country
+        troopsSelected = troopsAvailable
+        troopsLeft = 0
+        updateTextViews()
     }
-
-    fun updateTroopsSelected(troops: Int){
-        troopsSelected = troops
-        troopsSelectedText.text = troops.toString()
-    }
-
+    
     fun updateTroopsAvailable(troops: Int) {
         troopsAvailable = troops
-        troopsAvailableText.text = troops.toString()
+        updateTextViews()
     }
 
     private fun addTroops() {
-        if (troopsAvailable > 0) {
-            this.troopsAvailableText.text = (--troopsAvailable).toString()
-            this.troopsSelectedText.text = (++troopsSelected).toString()
+        if (troopsLeft > 0) {
+            troopsSelected++
+            troopsLeft--
+            updateTextViews()
         }
     }
 
-    private fun minTroops() {
+    private fun removeTroops() {
         if (troopsSelected > 0) {
-            troopsSelectedText.text = (--troopsSelected).toString()
-            troopsAvailableText.text = (++troopsAvailable).toString()
+            troopsSelected--
+            troopsLeft++
+            updateTextViews()
         }
     }
 
     private fun cancel() {
-        troopsAvailable += troopsSelected
+        troopsLeft = troopsSelected
         troopsSelected = 0
-        troopsAvailableText.text = troopsAvailable.toString()
-        troopsSelectedText.text = troopsSelected.toString()
-        targetCountryText.text = NO_SELECTION
+        countrySelected = NO_SELECTION
+        updateTextViews()
         listener.updateButtons()
     }
 
-    //TODO
+    /**
+     *
+     *
+     **/
+
     private fun dispatch() {
         if (countrySelected == NO_SELECTION) {
             listener.toastIt("no country selected")
@@ -115,13 +128,22 @@ class ReinforcementFragment : Fragment() {
             listener.toastIt("no troops selected")
         } else {
             listener.setReinforcement(countrySelected, troopsSelected)
-            updateTroopsSelected(0)
-            listener.updateButtons()
-            if(troopsAvailable == 0) {
+            troopsAvailable -= troopsSelected
+            troopsSelected = 0
+            updateTextViews()
+
+            if (troopsAvailable == 0) {
+
                 listener.changePhase("attack")
-                listener.getAttackFragment()
+
+                //Change fragment with delay
+                GlobalScope.launch {
+                    delay(1000)
+                    activity?.runOnUiThread(Runnable {
+                        listener.getAttackFragment()
+                    })
+                }
             }
         }
-
     }
 }

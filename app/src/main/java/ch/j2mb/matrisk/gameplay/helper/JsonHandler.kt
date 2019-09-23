@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import ch.j2mb.matrisk.gameplay.helper.ai_machine.*
 import ch.j2mb.matrisk.gameplay.model.ContinentList
+import ch.j2mb.matrisk.gameplay.model.CountryList
 import com.google.gson.Gson
 import java.io.InputStream
 import java.util.ArrayList
@@ -24,12 +25,11 @@ object JsonHandler {
     }
 
     fun getContinentListFromJson(jsonString: String): ContinentList {
-        var continentList: ContinentList? = null
-        val gson = Gson()
         Log.d("JSON:", "getContinentListFromJson")
         Log.d("JSON:", jsonString)
 
-        continentList = gson.fromJson(jsonString, ContinentList::class.java)
+        val gson = Gson()
+        var continentList = gson.fromJson(jsonString, ContinentList::class.java)?: ContinentList()
         continentList.continents.sortBy { it.name }
 
         //DEBUG
@@ -38,7 +38,8 @@ object JsonHandler {
             Log.d("JSON:", "continent: ${continent.name}")
             for (country in continent.countries) {
                 Log.d(
-                    "JSON:", "name: ${country.name},\t player:${country.player},\t count:${country.count},\t modified:${country.modified}"
+                    "JSON:",
+                    "name: ${country.name},\t player:${country.player},\t count:${country.count},\t modified:${country.modified}"
                 )
             }
         }
@@ -46,12 +47,17 @@ object JsonHandler {
         return continentList
     }
 
+    fun getCountryListFromJson(jsonString: String) : CountryList {
+        val gson = Gson()
+        return gson.fromJson(jsonString, CountryList::class.java)?: CountryList()
+    }
+
     fun getBidirectionalLinkfromJson(jsonString: String): BiDirectionalLinkList {
         val gson = Gson()
         Log.d("JSON:", "BiDirectionalLinkList from JSON")
 
         val biDirectionalLinkList = gson.fromJson(jsonString, BiDirectionalLinkList::class.java)
-        for(link in biDirectionalLinkList.bidirectionalLinks)
+        for (link in biDirectionalLinkList.bidirectionalLinks)
             Log.d("Links:", "from: ${link.fromCountry},\t to:${link.toCountry},")
         return biDirectionalLinkList
     }
@@ -68,7 +74,7 @@ object JsonHandler {
         val gsonContinentList = ArrayList<GsonTemplateContinent>()
         for (continent in continentList.continents) {
             val countryList = ArrayList<GsonTemplateCountry>()
-            Log.d("gsonTemplateConverter:", "continent:${continent}")
+            Log.d("gsonTemplateConverter:", "continent:${continent.name}")
 
             for (country in continent.countries) {
                 countryList.add(
@@ -79,7 +85,10 @@ object JsonHandler {
                         false
                     )
                 )
-                Log.d("gsonTemplateConverter:", "name: ${country.name},\t player:${country.player},\t count:${country.count},\t modified:${country.modified}")
+                Log.d(
+                    "gsonTemplateConverter:",
+                    "name: ${country.name},\t player:${country.player},\t count:${country.count},\t modified:${country.modified}"
+                )
             }
             val gsonContinent = GsonTemplateContinent(continent.name, countryList)
             gsonContinentList.add(gsonContinent)
@@ -89,6 +98,15 @@ object JsonHandler {
         gsonTemplateCountryGraph.continents = gsonContinentList
         gsonTemplateCountryGraph.bidirectionalLinks = bidirectionalLinks
         return gsonTemplateCountryGraph
+    }
+
+    fun getCountryGraphJson(
+        continentList: ContinentList,
+        bidirectionalLinks: ArrayList<GsonTemplateBidirectionalLink>
+    ): String {
+        var jsonString = getJsonFromCountryGraph(gsonTemplateConverter(continentList, bidirectionalLinks))
+        Log.d("getCountryGraphJson:", jsonString)
+        return jsonString
     }
 
     fun getJsonFromCountryGraph(countryGraphObject: GsonTemplateCountryGraph): String {

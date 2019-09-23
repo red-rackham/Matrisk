@@ -1,5 +1,6 @@
 package ch.j2mb.matrisk.gameplay.helper
 
+import android.app.Activity
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,13 +10,16 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import ch.j2mb.matrisk.R
 import ch.j2mb.matrisk.gameplay.model.Country
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random.Default.nextInt
 
 class BattleGround(
     var counterparties: List<Country>,
     var attackingTroops: Int,
     val troopsLeft: Int,
-    context: Context
+    val context: Context
 ) {
 
     lateinit var listener: GameActivityInterface
@@ -130,16 +134,42 @@ class BattleGround(
     }
 
     fun showDicePicture(attack: List<Int?>, defend: List<Int>) {
-        attackPopup.findViewById<ImageView>(R.id.attackerDice1)
-            .setImageResource(getDicePicture(attack[0]))
-        attackPopup.findViewById<ImageView>(R.id.attackerDice2)
-            .setImageResource(getDicePicture(attack[1]))
-        attackPopup.findViewById<ImageView>(R.id.attackerDice3)
-            .setImageResource(getDicePicture(attack[2]))
-        attackPopup.findViewById<ImageView>(R.id.defenderDice1)
-            .setImageResource(getDicePicture(defend[0]))
-        attackPopup.findViewById<ImageView>(R.id.defenderDice2)
-            .setImageResource(getDicePicture(defend[1]))
+
+        GlobalScope.launch {
+
+            val activity = context as Activity
+
+            activity.runOnUiThread(Runnable {
+                attackPopup.findViewById<ImageView>(R.id.attackerDice1)
+                    .setImageResource(getDicePicture(attack[0]))
+            })
+            delay(300)
+
+            activity.runOnUiThread(Runnable {
+                attackPopup.findViewById<ImageView>(R.id.attackerDice2)
+                    .setImageResource(getDicePicture(attack[1]))
+            })
+            delay(300)
+
+            activity.runOnUiThread(Runnable {
+                attackPopup.findViewById<ImageView>(R.id.attackerDice3)
+                    .setImageResource(getDicePicture(attack[2]))
+            })
+            delay(300)
+
+            activity.runOnUiThread(Runnable {
+                attackPopup.findViewById<ImageView>(R.id.defenderDice1)
+                    .setImageResource(getDicePicture(defend[0]))
+            })
+            delay(300)
+
+            activity.runOnUiThread(Runnable {
+                attackPopup.findViewById<ImageView>(R.id.defenderDice2)
+                    .setImageResource(getDicePicture(defend[1]))
+            })
+            delay(300)
+
+        }
     }
 
     fun updateTextViews() {

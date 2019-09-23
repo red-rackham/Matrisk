@@ -107,11 +107,12 @@ class RelocationFragment : Fragment() {
         targetCountryText.text = targetCountry
     }
 
-    fun cancel() {
-        troopsSelectedText.text = "0"
-        troopsLeftText.text = "0"
-        sourceCountryText.text = NO_SELECTION
-        targetCountryText.text = NO_SELECTION
+    private fun cancel() {
+        troopsSelected = 0
+        troopsLeft = 0
+        sourceCountry = NO_SELECTION
+        targetCountry = NO_SELECTION
+        updateTextViews()
         listener.updateButtons()
     }
 
@@ -126,9 +127,11 @@ class RelocationFragment : Fragment() {
     }
 
     fun updateSourceCountry(countryId: String) {
+
         sourceCountry = countryId
-        troopsLeft = listener.getCountryById(countryId)?.count ?: 0
-        troopsSelected = 0
+        var troopsAvailable = listener.getCountryById(countryId)?.count ?: 0
+        troopsSelected = troopsAvailable - 1
+        troopsLeft = troopsAvailable - troopsSelected
         updateTextViews()
     }
 
