@@ -25,6 +25,9 @@ import ch.j2mb.matrisk.gameplay.helper.ai_machine.MinimalRisk
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class GameActivity : AppCompatActivity(), GameActivityInterface {
@@ -164,7 +167,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 continents[i][j].setOnClickListener {
                     buttonClicked(continents[i][j])
 
-                    Log.d("onCreate", "setOnClickListener: ${getButtonId(continents[i][j])}")
+                    Log.d("UI", "touched: ${getButtonId(continents[i][j])}")
                 }
             }
         }
@@ -328,9 +331,11 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         var newBoard: String
         var newContinentList: ContinentList
 
+
         //Reinforcement phase of bot
         val reinforcementTroops = getTroopsForReinforcement(player)
         newBoard = MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
+        Log.d("botPhase, reinforcement", "${newBoard}")
         newContinentList = JsonHandler.getContinentListFromJson(newBoard)
         //Show Bot-Log
         for ((i, continent) in continentList.continents.withIndex())
@@ -345,7 +350,10 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
         //Attack phase of bot
         newBoard = MinimalRisk.attack(getJsonForBot(), player)
+        Log.d("botPhase, attack", "${newBoard}")
+
         continentList = JsonHandler.getContinentListFromJson(newBoard)
+
         for (continent in continentList.continents)
             for (country in continent.countries)
                 if (country.modified) botFragment.addBotAction("${player} conquered ${country.name}")
@@ -353,6 +361,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
         //Relocation phase of bot
         newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
+        Log.d("botPhase, relocation", "${newBoard}")
         newContinentList = JsonHandler.getContinentListFromJson(newBoard)
         var fromCountry = ""
         var toCountry = ""
@@ -380,7 +389,15 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         if (playerList[moveOfPlayer].bot) {
             changePhase("bot")
             getBotFragment()
-            botPhase()
+
+            GlobalScope.launch {
+                while (botFragment.view == null) {
+                    Log.d("nextPlayer()", "waiting for botFragmentView")
+                    delay(10)
+                }
+                this@GameActivity.runOnUiThread(Runnable { botPhase() })
+                Log.d("nextPlayer", "botFragmentView was added")
+            }
         } else {
             changePhase("reinforcement")
             getReinforcementFragment()
