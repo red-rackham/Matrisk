@@ -2,11 +2,8 @@ package ch.j2mb.matrisk.gameplay.helper
 
 import android.app.Activity
 import android.content.Context
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import android.widget.PopupWindow
 import android.widget.TextView
 import ch.j2mb.matrisk.R
 import ch.j2mb.matrisk.gameplay.model.Country
@@ -22,20 +19,17 @@ class BattleGround(
     val context: Context
 ) {
 
+    //attacker = counterparties[0], defender = counterparties[1]
+    var attackDices = 0
+    var defendDices = 0
     lateinit var listener: GameActivityInterface
     var attackPopup: View
-
 
     init {
         if (context is GameActivityInterface) listener = context
         attackPopup = listener.showAttackPopup()
         updateTextViews()
     }
-
-    //attacker = counterparties[0], defender = counterparties[1]
-
-    var attackDices = 0
-    var defendDices = 0
 
     fun battleRound() {
 
@@ -63,7 +57,8 @@ class BattleGround(
         attackThrow.sortDescending()
         defendThrow.sortDescending()
 
-
+        //animation
+        clearDicePictures()
         showDicePicture(attackThrow, defendThrow)
 
         for (i in 0 until pairs)
@@ -74,8 +69,14 @@ class BattleGround(
                 //defending is higher or equal than attacking, attacker looses one troop
                 attackingTroops--
             }
-        updateTextViews()
 
+        GlobalScope.launch {
+
+            val activity = context as Activity
+            delay(1000)
+            activity.runOnUiThread(Runnable { updateTextViews() })
+
+        }
     }
 
     fun findWinner(): List<Country>? {
@@ -133,6 +134,19 @@ class BattleGround(
         }
     }
 
+    fun clearDicePictures() {
+        attackPopup.findViewById<ImageView>(R.id.attackerDice1)
+            .setImageResource(getDicePicture(null))
+        attackPopup.findViewById<ImageView>(R.id.attackerDice2)
+            .setImageResource(getDicePicture(null))
+        attackPopup.findViewById<ImageView>(R.id.attackerDice3)
+            .setImageResource(getDicePicture(null))
+        attackPopup.findViewById<ImageView>(R.id.defenderDice1)
+            .setImageResource(getDicePicture(null))
+        attackPopup.findViewById<ImageView>(R.id.defenderDice2)
+            .setImageResource(getDicePicture(null))
+    }
+
     fun showDicePicture(attack: List<Int?>, defend: List<Int>) {
 
         GlobalScope.launch {
@@ -168,13 +182,12 @@ class BattleGround(
                     .setImageResource(getDicePicture(defend[1]))
             })
             delay(300)
-
         }
     }
 
     fun updateTextViews() {
         attackPopup.findViewById<TextView>(R.id.attackingCountry).text = counterparties[0].name
-        attackPopup.findViewById<TextView>(R.id.attackingCountry).text = counterparties[1].name
+        attackPopup.findViewById<TextView>(R.id.defendingCountry).text = counterparties[1].name
         attackPopup.findViewById<TextView>(R.id.attackingTroops).text = attackingTroops.toString()
         attackPopup.findViewById<TextView>(R.id.defendingTroops).text =
             counterparties[1].count.toString()

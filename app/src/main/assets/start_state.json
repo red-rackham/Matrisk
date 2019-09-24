@@ -46,14 +46,14 @@
       "name": "D",
       "countries": [
         {"name": "D11", "player": "B", "count": 1, "modified": false },
-        {"name": "D12", "player": "B", "count": 2, "modified": false },
-        {"name": "D13", "player": "B", "count": 3, "modified": false },
-        {"name": "D21", "player": "B", "count": 4, "modified": false },
-        {"name": "D22", "player": "B", "count": 5, "modified": false },
-        {"name": "D23", "player": "B", "count": 6, "modified": false },
-        {"name": "D31", "player": "B", "count": 7, "modified": false },
-        {"name": "D32", "player": "B", "count": 8, "modified": false },
-        {"name": "D33", "player": "B", "count": 9, "modified": false }
+        {"name": "D12", "player": "B", "count": 1, "modified": false },
+        {"name": "D13", "player": "B", "count": 1, "modified": false },
+        {"name": "D21", "player": "B", "count": 1, "modified": false },
+        {"name": "D22", "player": "B", "count": 1, "modified": false },
+        {"name": "D23", "player": "B", "count": 1, "modified": false },
+        {"name": "D31", "player": "B", "count": 1, "modified": false },
+        {"name": "D32", "player": "B", "count": 1, "modified": false },
+        {"name": "D33", "player": "B", "count": 1, "modified": false }
       ]
     }
   ],

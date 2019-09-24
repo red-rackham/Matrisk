@@ -226,8 +226,8 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 "relocation" -> buttonClickedRelocationPhase(button, ownButton, buttonID)
             }
         } else {
-                toastIt("wait for your turn")
-            }
+            toastIt("wait for your turn")
+        }
     }
 
     private fun buttonClickedReinforcementPhase(
@@ -296,7 +296,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             for (j in continentButtonList[i].indices)
                 if (getButtonId(continentButtonList[i][j]) == countrySelected)
 
-                    //update button in seperate coroutine
+                //update button in seperate coroutine
                     GlobalScope.launch {
                         for (k in 0 until troops) {
                             increaseTroops(continentButtonList[i][j])
@@ -311,7 +311,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
     private fun relocationCheck(source: String, target: String): Boolean {
 
-        Log.d("relocationCheck:","source:${source}\t target:${target}")
+        Log.d("relocationCheck:", "source:${source}\t target:${target}")
 
         var relocationValidity = false
         //get list of possible targets and check if target country is in that list
@@ -355,16 +355,16 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
         for(country in countryList.countries) {
 
-            Log.d("attackCheck:", "country in list checked: ${country}")
+        Log.d("attackCheck:", "country in list checked: ${country}")
 
-            if (country.name == target) {
-                attackValidity = true
-                Log.d("attackCheck:","country found:${country}")
-            }
+        if (country.name == target) {
+        attackValidity = true
+        Log.d("attackCheck:","country found:${country}")
+        }
         }
 
         return attackValidity
-        **/
+         **/
     }
 
 
@@ -392,49 +392,66 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         var newContinentList: ContinentList
 
 
-        GlobalScope.launch {
+        val reinforcementTroops = getTroopsForReinforcement(player)
+        newBoard =
+            MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
+        Log.d("botPhase, reinforcement", "${newBoard}")
+        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+        //Show Bot-Log
+        for ((i, continent) in continentList.continents.withIndex())
+            for ((j, country) in continent.countries.withIndex())
+                if (country.count < newContinentList.continents[i].countries[j].count) {
+                    val newTroops =
+                        newContinentList.continents[i].countries[j].count - country.count
 
-            val reinforcementTroops = getTroopsForReinforcement(player)
-            newBoard =
-                MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
-            Log.d("botPhase, reinforcement", "${newBoard}")
-            newContinentList = JsonHandler.getContinentListFromJson(newBoard)
-            //Show Bot-Log
-            for ((i, continent) in continentList.continents.withIndex())
-                for ((j, country) in continent.countries.withIndex())
-                    if (country.modified) {
-                        val newTroops =
-                            newContinentList.continents[i].countries[j].count - country.count
-                        botFragment.addBotAction("${player} placed ${newTroops} on ${country.name}")
-                        delay(200)
+                    GlobalScope.launch {
+
+                        //Only the original thread that created a view hierarchy can touch its views.
+                        this@GameActivity.runOnUiThread(Runnable {
+                            botFragment.addBotAction("${player} placed ${newTroops} on ${country.name}")
+                        })
+
+                        delay(300)
                     }
+                }
 
-            continentList = newContinentList
-            updateButtons()
+        continentList = newContinentList
+        //delay(500)
+        updateButtons()
 
 
-            //Attack phase of bot
-            newBoard = MinimalRisk.attack(getJsonForBot(), player)
-            Log.d("botPhase, attack", "${newBoard}")
+        //Attack phase of bot
+        newBoard = MinimalRisk.attack(getJsonForBot(), player)
+        Log.d("botPhase, attack", "${newBoard}")
 
-            continentList = JsonHandler.getContinentListFromJson(newBoard)
+        continentList = JsonHandler.getContinentListFromJson(newBoard)
+
+        GlobalScope.launch {
 
             for (continent in continentList.continents)
                 for (country in continent.countries)
                     if (country.modified) {
-                        botFragment.addBotAction("${player} conquered ${country.name}")
-                        delay(200)
+                        //Only the original thread that created a view hierarchy can touch its views.
+                        this@GameActivity.runOnUiThread(Runnable {
+                            botFragment.addBotAction("${player} conquered ${country.name}")
+                        })
+                        delay(300)
                     }
 
+            delay(500)
             updateButtons()
 
-            //Relocation phase of bot
-            newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
-            Log.d("botPhase, relocation", "${newBoard}")
-            newContinentList = JsonHandler.getContinentListFromJson(newBoard)
-            var fromCountry = ""
-            var toCountry = ""
-            var troopsMoved = 0
+        }
+
+        //Relocation phase of bot
+        newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
+        Log.d("botPhase, relocation", "${newBoard}")
+        newContinentList = JsonHandler.getContinentListFromJson(newBoard)
+        var fromCountry = ""
+        var toCountry = ""
+        var troopsMoved = 0
+
+        GlobalScope.launch {
             for ((i, continent) in continentList.continents.withIndex())
                 for ((j, country) in continent.countries.withIndex())
                     if (country.modified) {
@@ -447,12 +464,15 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                             troopsMoved = troops
                         }
                     }
-            botFragment.addBotAction("${player} moved ${troopsMoved} troops from ${fromCountry} to ${toCountry}")
+            this@GameActivity.runOnUiThread(Runnable {
+                botFragment.addBotAction("${player} moved ${troopsMoved} troops from ${fromCountry} to ${toCountry}")
+            })
+            delay(500)
             updateButtons()
-
         }
 
     }
+
 
     override fun nextPlayer() {
 
@@ -563,14 +583,21 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
             if (counterparties != null) {
                 updateCountries(counterparties)
 
+
                 GlobalScope.launch {
                     delay(2000)
-                    closeAttackPopup()
-                    updateButtons()
+                    this@GameActivity.runOnUiThread(Runnable {
+                        closeAttackPopup()
+                        updateButtons()
+                    })
                 }
-                //TODO:SHOW WINNER IN TOAST OR POPUP
+
+
             }
+            //TODO:SHOW WINNER IN TOAST OR POPUP
         }
+
+
 
         popUpView.findViewById<Button>(R.id.fastAttackButtonPop).setOnClickListener {
             val counterparties = battleGround.fastfight()
@@ -579,8 +606,11 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
                 GlobalScope.launch {
                     delay(1000)
-                    closeAttackPopup()
-                    updateButtons()
+                    this@GameActivity.runOnUiThread(Runnable {
+                        closeAttackPopup()
+                        updateButtons()
+                    })
+
                 }
 
                 //TODO:SHOW WINNER IN TOAST OR POPUP
