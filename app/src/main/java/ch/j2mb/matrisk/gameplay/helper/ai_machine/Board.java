@@ -1,5 +1,7 @@
 package ch.j2mb.matrisk.gameplay.helper.ai_machine;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import com.google.gson.Gson;
 
 class Board {
 
@@ -44,10 +45,10 @@ class Board {
                 countries.add(new GsonTemplateCountry(n.getName(), n.getPlayer(), n.getCount(), n.isModified()));
             }
             countryGraphObject.continents.add(new GsonTemplateContinent(continentName, countries));
-        }                        
+        }
         for (Edge e : g.getAllBidirectionalLinks()) {
-            countryGraphObject.bidirectionalLinks.add(new GsonTemplateBidirectionalLink(e.getSource().getName(), e.getDestination().getName())); 
-        }                        
+            countryGraphObject.bidirectionalLinks.add(new GsonTemplateBidirectionalLink(e.getSource().getName(), e.getDestination().getName()));
+        }
         Gson gson = new Gson();
         return gson.toJson(countryGraphObject);
     }
@@ -120,7 +121,10 @@ class Board {
     }
 
     ArrayList<Node> possibleAttackingCountries(String attackingPlayer, Node targetCountry) {
-        ArrayList<Node> possibleAttackingCountries = new ArrayList<>(); 
+        ArrayList<Node> possibleAttackingCountries = new ArrayList<>();
+        if (Objects.equals(targetCountry.getPlayer(), attackingPlayer)) {
+            return possibleAttackingCountries;
+        }
         HashSet<Node> neighbors = this.g.childrenOf(targetCountry);
         for (Node neighbor : neighbors) {
             if (Objects.equals(neighbor.getPlayer(), attackingPlayer) && neighbor.getCount() > 1) {
@@ -131,14 +135,14 @@ class Board {
     }
 
     ArrayList<Node> possibleTargetCountries(String attackingPlayer) {
-        ArrayList<Node> possibleTargetCountries = new ArrayList<>(); 
-        ArrayList<Node> enemyCountries = new ArrayList<>(); 
+        ArrayList<Node> enemyCountries = new ArrayList<>();
         Set<Node> nodes = this.g.getAllNodes();
         for (Node node : nodes) {
-            if (! Objects.equals(node.getPlayer(), attackingPlayer)) {
+            if (!Objects.equals(node.getPlayer(), attackingPlayer)) {
                 enemyCountries.add(node);
             }
         }
+        ArrayList<Node> possibleTargetCountries = new ArrayList<>();
         for (Node enemyCountry : enemyCountries) {
             ArrayList<Node> possibleAttackingCountries = possibleAttackingCountries(attackingPlayer, enemyCountry);
             if (possibleAttackingCountries.size() > 0) {
@@ -149,18 +153,21 @@ class Board {
     }
 
     ArrayList<Node> possibleTargetCountries(String attackingPlayer, Node attackingCountry) {
-        ArrayList<Node> possibleTargetCountries = new ArrayList<>(); 
-        ArrayList<Node> candidateCountries = possibleTargetCountries(attackingPlayer);
-        for (Node candidateCountry : candidateCountries) {
-            if (shortestPath(attackingCountry, candidateCountry, attackingPlayer).size() > 0) {
-                possibleTargetCountries.add(candidateCountry);
+        ArrayList<Node> possibleTargetCountries = new ArrayList<>();
+        if (!(Objects.equals(attackingCountry.getPlayer(), attackingPlayer) && attackingCountry.getCount() > 1)) {
+            return possibleTargetCountries;
+        }
+        HashSet<Node> neighbors = this.g.childrenOf(attackingCountry);
+        for (Node neighbor : neighbors) {
+            if (!Objects.equals(neighbor.getPlayer(), attackingPlayer)) {
+                possibleTargetCountries.add(neighbor);
             }
         }
         return possibleTargetCountries;
     }
 
     void battle(Node attackingCountry, Node targetCountry) {
-        // choose winner by drawing from urn, with each player 
+        // choose winner by drawing from urn, with each player
         // being represented in proportion to the number of troops
         ArrayList<String> urn = new ArrayList<>();
         for (int i = 0; i < attackingCountry.getCount(); i++) {
@@ -184,7 +191,7 @@ class Board {
             int randomIndex = randomGenerator.nextInt(possibleTargetCountries.size());
             Node targetCountry = possibleTargetCountries.get(randomIndex);
             ArrayList<Node> possibleAttackingCountries = possibleAttackingCountries(attackingPlayer, targetCountry);
-            if (possibleAttackingCountries.size() > 0)  {
+            if (possibleAttackingCountries.size() > 0) {
                 randomIndex = randomGenerator.nextInt(possibleAttackingCountries.size());
                 Node attackingCountry = possibleAttackingCountries.get(randomIndex);
                 battle(attackingCountry, targetCountry);
@@ -193,7 +200,7 @@ class Board {
     }
 
     ArrayList<Node> possibleSources(String player) {
-        ArrayList<Node> possibleSources = new ArrayList<>() ;
+        ArrayList<Node> possibleSources = new ArrayList<>();
         Set<Node> nodes = this.g.getAllNodes();
         for (Node node : nodes) {
             if (Objects.equals(node.getPlayer(), player) && node.getCount() > 1) {
@@ -204,7 +211,7 @@ class Board {
     }
 
     ArrayList<Node> possibleSources(String player, Node destination) {
-        ArrayList<Node> possibleSources = new ArrayList<>(); 
+        ArrayList<Node> possibleSources = new ArrayList<>();
         ArrayList<Node> candidates = possibleSources(player);
         for (Node candidate : candidates) {
             if (shortestPath(candidate, destination, player).size() > 0) {
@@ -215,7 +222,7 @@ class Board {
     }
 
     ArrayList<Node> possibleDestinations(String player) {
-        ArrayList<Node> possibleDestinations = new ArrayList<>() ;
+        ArrayList<Node> possibleDestinations = new ArrayList<>();
         Set<Node> nodes = this.g.getAllNodes();
         for (Node node : nodes) {
             if (Objects.equals(node.getPlayer(), player)) {
@@ -226,7 +233,7 @@ class Board {
     }
 
     ArrayList<Node> possibleDestinations(String player, Node source) {
-        ArrayList<Node> possibleDestinations = new ArrayList<>() ;
+        ArrayList<Node> possibleDestinations = new ArrayList<>();
         ArrayList<Node> candidates = possibleDestinations(player);
         for (Node candidate : candidates) {
             if (shortestPath(source, candidate, player).size() > 0) {
@@ -243,7 +250,7 @@ class Board {
             for (Node possibleSource : possibleSources) {
                 for (Node possibleDestination : possibleDestinations) {
                     if (possibleDestination != possibleSource
-                        && shortestPath(possibleSource, possibleDestination, player).size() > 0) {
+                            && shortestPath(possibleSource, possibleDestination, player).size() > 0) {
                         possibleDestination.setCount(possibleDestination.getCount() + possibleSource.getCount() - 1);
                         possibleSource.setCount(1);
                         return;
@@ -268,7 +275,7 @@ class Board {
 
     boolean gameOver() {
         Set<String> nodeGroups = this.g.getAllNodeGroups();
-        Set<String> players =  this.g.getAllPlayers(); 
+        Set<String> players = this.g.getAllPlayers();
         for (String nodeGroup : nodeGroups) {
             for (String player : players) {
                 if (this.g.nodeCount(nodeGroup, player) == 0) {
@@ -280,4 +287,3 @@ class Board {
     }
 
 }
-

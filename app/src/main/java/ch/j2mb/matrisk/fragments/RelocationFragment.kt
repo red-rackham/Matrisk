@@ -100,7 +100,7 @@ class RelocationFragment : Fragment() {
         }
     }
 
-    private fun updateTextViews() {
+    fun updateTextViews() {
         troopsSelectedText.text = troopsSelected.toString()
         troopsLeftText.text = troopsLeft.toString()
         sourceCountryText.text = sourceCountry
@@ -121,7 +121,6 @@ class RelocationFragment : Fragment() {
             updateSourceCountry(countryId)
             "source"
         } else {
-            updateTargetCountry(countryId)
             "target"
         }
     }
@@ -129,7 +128,7 @@ class RelocationFragment : Fragment() {
     fun updateSourceCountry(countryId: String) {
 
         sourceCountry = countryId
-        var troopsAvailable = listener.getCountryById(countryId)?.count ?: 0
+        var troopsAvailable = listener.getCountryById(countryId)?.count ?: 1
         troopsSelected = troopsAvailable - 1
         troopsLeft = troopsAvailable - troopsSelected
         updateTextViews()

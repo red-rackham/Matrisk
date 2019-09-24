@@ -4,7 +4,6 @@ package ch.j2mb.matrisk
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -13,21 +12,21 @@ import android.view.View
 import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import ch.j2mb.matrisk.fragments.*
 import ch.j2mb.matrisk.gameplay.helper.BattleGround
+import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 import ch.j2mb.matrisk.gameplay.helper.GameInitializer
 import ch.j2mb.matrisk.gameplay.helper.JsonHandler
-import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
 import ch.j2mb.matrisk.gameplay.helper.ai_machine.BiDirectionalLinkList
 import ch.j2mb.matrisk.gameplay.helper.ai_machine.MinimalRisk
 import ch.j2mb.matrisk.gameplay.model.ContinentList
 import ch.j2mb.matrisk.gameplay.model.Country
 import ch.j2mb.matrisk.gameplay.model.Player
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.lang.Runnable
 
 
 class GameActivity : AppCompatActivity(), GameActivityInterface {
@@ -254,16 +253,22 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 changeButtonToWhite(button)
             }
             false -> {
-                when {
-                    (attackFragment.sourceCountry == NO_SELECTION) -> toastIt("choose first attacking country")
-                    (attackCheck(attackFragment.sourceCountry, buttonID)) -> {
+                if (attackFragment.sourceCountry == NO_SELECTION) {
+                    toastIt("choose first attacking country")
+                } else {
+                    var valid = false
+                    runBlocking {
+                        valid = attackCheck(attackFragment.sourceCountry, buttonID)
+                    }
+                    if (valid) {
                         updateButtons()
                         val attackButton = getButtonById(attackFragment.sourceCountry)
                         attackButton?.let { changeButtonToWhite(attackButton) }
                         changeButtonToBlack(button)
                         attackFragment.updateTargetCountry(buttonID)
+                    } else {
+                        toastIt("selection not valid, country must be a neighbour")
                     }
-                    else -> toastIt("selection not valid, country must be a neighbour")
                 }
             }
         }
@@ -275,9 +280,18 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 val sourceCountryId = relocationFragment.sourceCountry
                 updateButtons()
                 when (relocationFragment.updateCountry(buttonID)) {
-                    "source" -> changeButtonToWhite(button)
+                    "source" -> {
+                        changeButtonToWhite(button)
+                        relocationFragment.updateSourceCountry(buttonID)
+
+                    }
                     "target" -> {
-                        if (relocationCheck(sourceCountryId, buttonID)) {
+                        var valid = false
+                        runBlocking {
+                            valid = relocationCheck(sourceCountryId, buttonID)
+                        }
+                        if (valid) {
+                            relocationFragment.updateTargetCountry(buttonID)
                             changeButtonToWhite(getButtonById(sourceCountryId))
                             changeButtonToBlack(button)
                         } else {
@@ -286,6 +300,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                     }
                 }
             }
+            false -> toastIt("you can only move troops to your own countries")
         }
     }
 
@@ -309,62 +324,81 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                     }
     }
 
-    private fun relocationCheck(source: String, target: String): Boolean {
+    private suspend fun relocationCheck(source: String, target: String): Boolean {
 
         Log.d("relocationCheck:", "source:${source}\t target:${target}")
 
-        var relocationValidity = false
-        //get list of possible targets and check if target country is in that list
-        val countryGraph =
-            JsonHandler.getCountryGraphJson(continentList, biDirectionalLinkList.bidirectionalLinks)
-        val possibleTargetsJson =
-            MinimalRisk.possibleDestinations(countryGraph, playerList[moveOfPlayer].name, source)
+        //Coroutine Optimized for CPU intensive work off the main thread
+        return withContext(Dispatchers.Default) {
+            var relocationValidity = false
 
-        Log.d("relocationCheck:", "MinmalRisk:${possibleTargetsJson}")
+            //get list of possible targets and check if target country is in that list
+            val countryGraph =
+                JsonHandler.getCountryGraphJson(
+                    continentList,
+                    biDirectionalLinkList.bidirectionalLinks
+                )
+            val possibleTargetsJson =
+                MinimalRisk.possibleDestinations(
+                    countryGraph,
+                    playerList[moveOfPlayer].name,
+                    source
+                )
 
-        val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
+            Log.d("relocationCheck:", "MinmalRisk:${possibleTargetsJson}")
 
-        for (country in countryList.countries) {
+            val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
 
-            Log.d("attackCheck:", "country in list checked: ${country}")
+            for (country in countryList.countries) {
 
-            if (country.name == target) {
-                relocationValidity = true
-                Log.d("attackCheck:", "country found:${country}")
+                Log.d("attackCheck:", "country in list checked: ${country}")
+
+                if (country.name == target) {
+                    relocationValidity = true
+                    Log.d("attackCheck:", "country found:${country}")
+                }
             }
+            return@withContext relocationValidity
         }
-
-        return relocationValidity
     }
 
-    private fun attackCheck(source: String, target: String): Boolean {
+    private suspend fun attackCheck(source: String, target: String): Boolean {
 
-        return true
+        Log.d("attackCheck:", "source:${source}\t target:${target}")
 
-        /**
-        Log.d("attackCheck:","source:${source}\t target:${target}")
+        //Coroutine Optimized for CPU intensive work off the main thread
 
-        var attackValidity = false
-        //get list of possible targets and check if target country is in that list
-        val countryGraph = JsonHandler.getCountryGraphJson(continentList, biDirectionalLinkList.bidirectionalLinks)
-        val possibleTargetsJson = MinimalRisk.possibleTargetCountries(countryGraph, playerList[moveOfPlayer].name, source)
 
-        Log.d("attackCheck:","MinmalRisk:${possibleTargetsJson}")
+        return withContext(Dispatchers.Default) {
+            var attackValidity = false
+            //get list of possible targets and check if target country is in that list
+            val countryGraph = JsonHandler.getCountryGraphJson(
+                continentList,
+                biDirectionalLinkList.bidirectionalLinks
+            )
+            val possibleTargetsJson = MinimalRisk.possibleTargetCountries(
+                countryGraph,
+                playerList[moveOfPlayer].name,
+                source
+            )
 
-        val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
+            Log.d("attackCheck:", "MinmalRisk:${possibleTargetsJson}")
 
-        for(country in countryList.countries) {
+            val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
 
-        Log.d("attackCheck:", "country in list checked: ${country}")
+            for (country in countryList.countries) {
 
-        if (country.name == target) {
-        attackValidity = true
-        Log.d("attackCheck:","country found:${country}")
+                Log.d("attackCheck:", "country in list checked: ${country}")
+
+                if (country.name == target) {
+                    attackValidity = true
+                    Log.d("attackCheck:", "country found:${country}")
+                }
+            }
+
+            return@withContext attackValidity
         }
-        }
 
-        return attackValidity
-         **/
     }
 
 
@@ -395,14 +429,18 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         val reinforcementTroops = getTroopsForReinforcement(player)
         newBoard =
             MinimalRisk.allocationOfExtraTroops(getJsonForBot(), player, reinforcementTroops)
-        Log.d("botPhase, reinforcement", "${newBoard}")
+        //Log.d("botPhase, reinforcement", "${newBoard}")
+        Log.d("botPhase, reinforcement", "Troops: ${reinforcementTroops}")
         newContinentList = JsonHandler.getContinentListFromJson(newBoard)
         //Show Bot-Log
+
+        var botReinforcementTroopsTotal = 0
         for ((i, continent) in continentList.continents.withIndex())
             for ((j, country) in continent.countries.withIndex())
-                if (country.count < newContinentList.continents[i].countries[j].count) {
+                if (country.count != newContinentList.continents[i].countries[j].count) {
                     val newTroops =
                         newContinentList.continents[i].countries[j].count - country.count
+                    botReinforcementTroopsTotal += newTroops
 
                     GlobalScope.launch {
 
@@ -414,6 +452,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                         delay(300)
                     }
                 }
+        Log.d("botPhase:", "Total troops: ${botReinforcementTroopsTotal}")
 
         continentList = newContinentList
         //delay(500)
