@@ -19,8 +19,9 @@ class BattleGround(
     val context: Context
 ) {
     //attacker is counterparties[0], defender is counterparties[1]
-    var attackDices: Int
-    var defendDices: Int
+    var attackDices: Int = 0
+    var defendDices: Int = 0
+    var defendingTroops: Int = counterparties[1].count
 
     var attackPopup: View
     val activity: Activity
@@ -30,8 +31,6 @@ class BattleGround(
         if (context is GameActivityInterface) listener = context
         attackPopup = listener.showAttackPopup()
         activity = context as Activity
-        attackDices = 0
-        defendDices = 0
         updateTextViews()
     }
 
@@ -39,7 +38,7 @@ class BattleGround(
      * Battle beween attacker and defender is simulated. Results are shown in the view (attack popup)
      *
      */
-    private fun battleRound() {
+    private fun battleRound(fastFight: Boolean) {
 
         //number of dices for attacker
         when {
@@ -50,8 +49,8 @@ class BattleGround(
 
         //number of dices for defender
         when {
-            counterparties[1].count >= 2 -> defendDices = 2
-            counterparties[1].count == 1 -> defendDices = 1
+            defendingTroops >= 2 -> defendDices = 2
+            defendingTroops == 1 -> defendDices = 1
         }
 
         //results of dice throws stored in lists
@@ -66,22 +65,28 @@ class BattleGround(
         defendThrow.sortDescending()
 
         //animation
-        clearDicePictures()
-        showDicePicture(attackThrow, defendThrow)
+        if(!fastFight) {
+            clearDicePictures()
+            showDicePicture(attackThrow, defendThrow)
+        }
 
         for (i in 0 until pairs)
             if (attackThrow[i] > defendThrow[i]) {
                 //if attack dice is higher than defending, defender looses one troop
-                counterparties[1].count--
+                defendingTroops--
             } else {
                 //defending is higher or equal than attacking, attacker looses one troop
                 attackingTroops--
             }
 
-        GlobalScope.launch {
-            val activity = context as Activity
-            delay(1000)
-            activity.runOnUiThread { updateTextViews() }
+        if(!fastFight) {
+            GlobalScope.launch {
+                val activity = context as Activity
+                delay(1000)
+                activity.runOnUiThread { updateTextViews() }
+            }
+        } else {
+            updateTextViews()
         }
     }
 
@@ -94,7 +99,7 @@ class BattleGround(
         //if attacker wins, the troops take over defending country
         when {
             //attacker wins: attacker invades defending country with #attackingTroops
-            (counterparties[1].count == 0) -> {
+            (defendingTroops == 0) -> {
                 counterparties[1].player = counterparties[0].player
                 counterparties[1].count = attackingTroops
                 counterparties[0].count = troopsLeft
@@ -105,6 +110,7 @@ class BattleGround(
             (attackingTroops == 0) -> {
                 listener.toastIt("you lose!")
                 counterparties[0].count = troopsLeft
+                counterparties[1].count = defendingTroops
                 return counterparties
             }
             else -> {
@@ -116,16 +122,16 @@ class BattleGround(
     /**
      * Initiate a fast battleRound where the attacker attacks with all troops and no withdrawals are possible
      */
-    fun fastfight(): List<Country> {
-        while (attackingTroops > 0 && counterparties[1].count > 0) {
-            battleRound()
+    fun fastFight(): List<Country>? {
+        while (attackingTroops > 0 && defendingTroops > 0) {
+            battleRound(true)
         }
-        return findWinner()!!
+        return findWinner()
     }
 
     //battle, each round the attacker can withdrawal or attack again
     fun fight(): List<Country>? {
-        battleRound()
+        battleRound(false)
         return findWinner()
     }
 
@@ -142,7 +148,7 @@ class BattleGround(
      */
     private fun closePopup() {
         GlobalScope.launch {
-            delay(1000)
+            delay(800)
             listener.closeAttackPopup()
         }
     }
@@ -194,34 +200,34 @@ class BattleGround(
 
             val activity = context as Activity
 
-            activity.runOnUiThread(Runnable {
+            activity.runOnUiThread {
                 attackPopup.findViewById<ImageView>(R.id.attackerDice1)
                     .setImageResource(getDicePicture(attack[0]))
-            })
+            }
             delay(300)
 
-            activity.runOnUiThread(Runnable {
+            activity.runOnUiThread {
                 attackPopup.findViewById<ImageView>(R.id.attackerDice2)
                     .setImageResource(getDicePicture(attack[1]))
-            })
+            }
             delay(300)
 
-            activity.runOnUiThread(Runnable {
+            activity.runOnUiThread {
                 attackPopup.findViewById<ImageView>(R.id.attackerDice3)
                     .setImageResource(getDicePicture(attack[2]))
-            })
+            }
             delay(300)
 
-            activity.runOnUiThread(Runnable {
+            activity.runOnUiThread {
                 attackPopup.findViewById<ImageView>(R.id.defenderDice1)
                     .setImageResource(getDicePicture(defend[0]))
-            })
+            }
             delay(300)
 
-            activity.runOnUiThread(Runnable {
+            activity.runOnUiThread {
                 attackPopup.findViewById<ImageView>(R.id.defenderDice2)
                     .setImageResource(getDicePicture(defend[1]))
-            })
+            }
             delay(300)
         }
     }
@@ -234,8 +240,7 @@ class BattleGround(
         attackPopup.findViewById<TextView>(R.id.attackingCountry).text = counterparties[0].name
         attackPopup.findViewById<TextView>(R.id.defendingCountry).text = counterparties[1].name
         attackPopup.findViewById<TextView>(R.id.attackingTroops).text = attackingTroops.toString()
-        attackPopup.findViewById<TextView>(R.id.defendingTroops).text =
-            counterparties[1].count.toString()
+        attackPopup.findViewById<TextView>(R.id.defendingTroops).text = defendingTroops.toString()
     }
 
 }

@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.PopupWindow
 
-class MultiPlayerActivity : AppCompatActivity() {
+class EndOfGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -135,14 +135,7 @@ class ReinforcementFragment : Fragment() {
             if (troopsAvailable == 0) {
 
                 listener.changePhase("attack")
-
-                //Change fragment with delay
-                GlobalScope.launch {
-                    delay(1000)
-                    activity?.runOnUiThread(Runnable {
-                        listener.getAttackFragment()
-                    })
-                }
+                listener.getAttackFragment()
             }
         }
     }

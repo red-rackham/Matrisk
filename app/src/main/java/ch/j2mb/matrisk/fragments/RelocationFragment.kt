@@ -74,7 +74,7 @@ class RelocationFragment : Fragment() {
             sourceCountry == NO_SELECTION -> listener.toastIt("select source country")
             targetCountry == NO_SELECTION -> listener.toastIt("select target country")
             troopsSelected < 1 -> listener.toastIt("select troops")
-            else -> listener.move(sourceCountry, targetCountry, troopsSelected)
+            else -> listener.relocate(sourceCountry, targetCountry, troopsSelected)
         }
     }
 

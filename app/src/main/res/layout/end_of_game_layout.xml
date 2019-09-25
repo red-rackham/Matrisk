@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EndOfGameActivity">
+    android:background="@drawable/pergament"
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/popUpButton"
+    <TextView
+        android:id="@+id/winner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GET THAT POPUP!"
+        android:fontFamily="@font/bangers"
+        android:text="and the winner is..."
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
