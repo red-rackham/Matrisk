@@ -16,15 +16,22 @@ class AttackFragment : Fragment() {
 
     private lateinit var listener: GameActivityInterface
 
-    var troopsSelected = 0
-    var troopsLeft = 0
-    var sourceCountry = NO_SELECTION
-    var targetCountry = NO_SELECTION
+    private var troopsSelected: Int
+    private var troopsLeft: Int
+    private var targetCountry: String
+    var sourceCountry: String
 
     private lateinit var sourceCountryText: TextView
     private lateinit var targetCountryText: TextView
     private lateinit var troopsSelectedText: TextView
     private lateinit var troopsLeftText: TextView
+
+    init {
+        troopsSelected = 0
+        troopsLeft = 0
+        sourceCountry = NO_SELECTION
+        targetCountry = NO_SELECTION
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,7 +49,6 @@ class AttackFragment : Fragment() {
     ): View? {
 
         val fragmentView = inflater.inflate(R.layout.attack_fragment, container, false)
-
 
         sourceCountryText = fragmentView.findViewById(R.id.sourceCountryAttack)
         targetCountryText = fragmentView.findViewById(R.id.targetCountryAttack)
@@ -68,10 +74,6 @@ class AttackFragment : Fragment() {
         updateTextViews()
         return fragmentView
     }
-
-    /**
-     *
-     */
 
     private fun attack() {
         when {
@@ -106,7 +108,7 @@ class AttackFragment : Fragment() {
         }
     }
 
-    fun clearSelection() {
+    private fun clearSelection() {
         troopsSelected = 0
         troopsLeft = 0
         sourceCountry = NO_SELECTION

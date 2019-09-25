@@ -613,48 +613,66 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
     override fun showAttackPopup(): View {
 
+        var ongoingBattle = false
+
         val view: View = findViewById(android.R.id.content)
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popUpView = inflater.inflate(R.layout.attack_popup, null)
 
         popUpView.findViewById<Button>(R.id.attackButtonPop).setOnClickListener {
-            val counterparties = battleGround.fight()
-            if (counterparties != null) {
-                updateCountries(counterparties)
+            if (!ongoingBattle) {
+                //Lock buttons when a battle is ongoing
+                ongoingBattle = true
+
+                val counterparties = battleGround.fight()
+                //if a player is defeated counterparties are returned, otherwise null
+                if (counterparties != null) {
+                    updateCountries(counterparties)
+                    GlobalScope.launch {
+                        delay(2000)
+                        this@GameActivity.runOnUiThread(Runnable {
+                            closeAttackPopup()
+                            updateButtons()
+                             //unlock buttons
+                            ongoingBattle = false
+                        })
+                    }
 
 
-                GlobalScope.launch {
-                    delay(2000)
-                    this@GameActivity.runOnUiThread(Runnable {
-                        closeAttackPopup()
-                        updateButtons()
-                    })
+                } else {
+                    //unlock buttons
+                    ongoingBattle = false
                 }
-
-
             }
-            //TODO:SHOW WINNER IN TOAST OR POPUP
         }
 
 
 
         popUpView.findViewById<Button>(R.id.fastAttackButtonPop).setOnClickListener {
-            val counterparties = battleGround.fastfight()
-            if (counterparties != null) {
-                updateCountries(counterparties)
 
-                GlobalScope.launch {
-                    delay(1000)
-                    this@GameActivity.runOnUiThread(Runnable {
-                        closeAttackPopup()
-                        updateButtons()
-                    })
+            var ongoingBattle = false
 
+            if (!ongoingBattle) {
+                val counterparties = battleGround.fastfight()
+                if (counterparties != null) {
+                    updateCountries(counterparties)
+
+                    GlobalScope.launch {
+                        delay(1000)
+                        this@GameActivity.runOnUiThread(Runnable {
+                            closeAttackPopup()
+                            updateButtons()
+                            ongoingBattle = false
+                        })
+
+                    }
+
+                    //TODO:SHOW WINNER IN TOAST OR POPUP
+                } else {
+                    ongoingBattle = false
                 }
 
-                //TODO:SHOW WINNER IN TOAST OR POPUP
             }
-
         }
 
         popUpView.findViewById<Button>(R.id.withdrawalButtonPop).setOnClickListener {
