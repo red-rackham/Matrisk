@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/winner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
         android:fontFamily="@font/bangers"
         android:text="and the winner is..."
         android:textSize="36sp"
@@ -24,6 +24,7 @@
         android:id="@+id/okButtonEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@android:string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

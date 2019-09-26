@@ -44,6 +44,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     private lateinit var botFragment: BotFragment
 
     private lateinit var battleGround: BattleGround
+
     private lateinit var attackPopupWindow: PopupWindow
     var ongoingBattle = false
     private var buttonsLocked = false
@@ -445,11 +446,9 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
      * @param troopsAttacking amount of troops which attack
      * @param troopsLeft amount of troops which are left behind in attacking country
      */
-    override fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft: Int) {
+    override fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft: Int, fastAttack: Boolean) {
         val counterparties = listOf(getCountryById(source)!!, getCountryById(target)!!)
-        battleGround = BattleGround(counterparties, troopsAttacking, troopsLeft, this)
-
-        isPlayerWinner("You won!")
+        battleGround = BattleGround(counterparties, troopsAttacking, troopsLeft, fastAttack, this)
     }
 
     /**
@@ -620,9 +619,9 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 delay(500)
                 updateButtons()
             }
-
+            botFragment.botActonDone = true
         }
-        botFragment.botActonDone = true
+
     }
 
     /**
@@ -652,29 +651,34 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         }
     }
 
-    private fun isPlayerWinner(winnerText: String) {
-        var winnerCount = 0
+    override fun isPlayerWinner(winnerText: String) {
+        var playerCount = 0
+        var countryCount = 0
         for (continent in continentList.continents)
-            for (country in continent.countries)
-                if (playerList[moveOfPlayer].name != country.player)
-                    winnerCount++
+            for (country in continent.countries) {
+                countryCount++
+                if (playerList[moveOfPlayer].name == country.player)
+                    playerCount++
+            }
+        Log.d("Winner:","countryCount:$countryCount, playerCount:$playerCount")
 
-        if (winnerCount == 0) {
+        if (playerCount == countryCount) {
             showEndOfGamePopUp(findViewById(android.R.id.content), winnerText)
+            Log.d("Winner", "${playerList[moveOfPlayer].name}")
         }
     }
 
     private fun showEndOfGamePopUp(view: View, winnerText: String) {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val EndPopUpView = inflater.inflate(R.layout.end_of_game_layout, null)
+        val endPopUpView = inflater.inflate(R.layout.end_of_game_layout, null)
 
         val width = 800
         val height = 200
         val focusable = false
-        val popupWindow = PopupWindow(EndPopUpView, width, height, focusable)
+        val popupWindow = PopupWindow(endPopUpView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, focusable)
 
-        EndPopUpView.findViewById<TextView>(R.id.winner).text = winnerText
-        EndPopUpView.findViewById<Button>(R.id.okButtonEnd).setOnClickListener {
+        endPopUpView.findViewById<TextView>(R.id.winner).text = winnerText
+        endPopUpView.findViewById<Button>(R.id.okButtonEnd).setOnClickListener {
             finish()
         }
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
@@ -819,6 +823,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 //if a player is defeated counterparties are returned, otherwise null
                 if (counterparties != null) {
                     updateCountries(counterparties)
+                    isPlayerWinner("You won!!!!")
                     GlobalScope.launch {
                         delay(2000)
                         this@GameActivity.runOnUiThread {
@@ -840,6 +845,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                 val counterparties = battleGround.fastFight()
                 if (counterparties != null) {
                     updateCountries(counterparties)
+                    isPlayerWinner("You won!!!!")
 
                     GlobalScope.launch {
                         delay(1000)

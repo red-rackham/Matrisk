@@ -58,15 +58,6 @@ class BotFragment : Fragment() {
         actionView.append(action)
         actionView.append('\n'.toString())
 
-/**
-        var scrollAmount = actionView.layout.
-            getLineTop(actionView.lineCount).minus(actionView.height)
-        // if there is no need to scroll, scrollAmount will be <=0
-        if (scrollAmount > 0)
-            actionView.scrollTo(0, scrollAmount)
-        else
-            actionView.scrollTo(0, 0)
-        **/
     }
 }
 

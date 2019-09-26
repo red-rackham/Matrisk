@@ -16,22 +16,27 @@ class BattleGround(
     private var counterparties: List<Country>,
     private var attackingTroops: Int,
     private val troopsLeft: Int,
+    fastAttack: Boolean,
     val context: Context
 ) {
     //attacker is counterparties[0], defender is counterparties[1]
-    var attackDices: Int = 0
-    var defendDices: Int = 0
-    var defendingTroops: Int = counterparties[1].count
+    private var attackDices: Int = 0
+    private var defendDices: Int = 0
+    private var defendingTroops: Int = counterparties[1].count
 
-    var attackPopup: View
-    val activity: Activity
+    private lateinit var attackPopup: View
+    private val activity: Activity = context as Activity
     lateinit var listener: GameActivityInterface
 
     init {
         if (context is GameActivityInterface) listener = context
-        attackPopup = listener.showAttackPopup()
-        activity = context as Activity
-        updateTextViews()
+        if (fastAttack) {
+            fastFight()
+            listener.isPlayerWinner("You won!!!!")
+        } else {
+            attackPopup = listener.showAttackPopup()
+            updateTextViews()
+        }
     }
 
     /**
@@ -65,7 +70,7 @@ class BattleGround(
         defendThrow.sortDescending()
 
         //animation
-        if(!fastFight) {
+        if (!fastFight) {
             clearDicePictures()
             showDicePicture(attackThrow, defendThrow)
         }
@@ -79,15 +84,16 @@ class BattleGround(
                 attackingTroops--
             }
 
-        if(!fastFight) {
+        if (!fastFight) {
             GlobalScope.launch {
                 val activity = context as Activity
-                delay(1000)
+                delay(1300)
                 activity.runOnUiThread { updateTextViews() }
+
             }
-        } else {
-            updateTextViews()
+
         }
+
     }
 
     /**

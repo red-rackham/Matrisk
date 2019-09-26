@@ -6,13 +6,14 @@ import ch.j2mb.matrisk.gameplay.model.Country
 
 
 interface GameActivityInterface {
+
     fun getAttackFragment()
     fun getRelocationFragment()
     fun getReinforcementFragment()
     fun getBotFragment()
     fun toastIt(bread: String)
     fun setReinforcement(countrySelected: String, troops: Int)
-    fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft:Int)
+    fun attack(source: String, target: String, troopsAttacking: Int, troopsLeft:Int, fastAttack: Boolean)
     fun relocate(source: String, target: String, troops: Int)
     fun updateButtons()
     fun changePhase(phase: String)
@@ -22,5 +23,6 @@ interface GameActivityInterface {
     fun closeAttackPopup()
     fun setTroopsForReinforcement()
     fun nextPlayer()
+    fun isPlayerWinner(winnerText: String)
 
 }

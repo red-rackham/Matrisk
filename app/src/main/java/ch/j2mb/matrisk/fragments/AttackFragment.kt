@@ -56,7 +56,11 @@ class AttackFragment : Fragment() {
         troopsLeftText = fragmentView.findViewById(R.id.troopsAvailableAttack)
 
         fragmentView.findViewById<Button>(R.id.attackButton).setOnClickListener {
-            attack()
+            attack(false)
+        }
+        fragmentView.findViewById<Button>(R.id.fastAttackFragButton).setOnClickListener {
+            attack(true)
+            listener.updateButtons()
         }
         fragmentView.findViewById<Button>(R.id.plusAttackButton).setOnClickListener {
             addTroops()
@@ -75,12 +79,12 @@ class AttackFragment : Fragment() {
         return fragmentView
     }
 
-    private fun attack() {
+    private fun attack(fastAttack: Boolean) {
         when {
             sourceCountry == NO_SELECTION -> listener.toastIt("select country")
             targetCountry == NO_SELECTION -> listener.toastIt("select target")
             troopsSelected < 1 -> listener.toastIt("select troops")
-            else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft)
+            else -> listener.attack(sourceCountry, targetCountry, troopsSelected, troopsLeft, fastAttack)
         }
         clearSelection()
     }
