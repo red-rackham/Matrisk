@@ -11,18 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".TestActivity"
-            android:label="@string/select_country"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".GameActivity" />
+        <activity android:name=".GameActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity android:name=".EndOfGameActivity" />
         <activity android:name=".AboutActivity" />
-        <activity android:name=".EditorActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity
-            android:name=".SinglePlayerActivity"
-            android:label="@string/title_activity_single_player" />
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />

@@ -147,8 +147,7 @@ class BattleGround(
      *
      */
     private fun closePopup() {
-        GlobalScope.launch {
-            delay(800)
+        activity.runOnUiThread {
             listener.closeAttackPopup()
         }
     }

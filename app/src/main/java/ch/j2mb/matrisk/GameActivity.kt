@@ -1,9 +1,7 @@
 package ch.j2mb.matrisk
 
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
@@ -11,10 +9,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.PopupWindow
-import android.widget.TextView
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -50,7 +46,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
     private lateinit var battleGround: BattleGround
     private lateinit var attackPopupWindow: PopupWindow
     var ongoingBattle = false
-    var buttonsLocked = false
+    private var buttonsLocked = false
 
     private var attackFragID = 0
     private var relocationFragID = 0
@@ -165,9 +161,10 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         for (i in continentButtonList.indices) {
             for (j in continentButtonList[i].indices) {
                 continentButtonList[i][j].setOnClickListener {
-                    buttonClicked(continentButtonList[i][j])
-
-                    Log.d("UI", "touched: ${getButtonId(continentButtonList[i][j])}")
+                    if(!buttonsLocked) {
+                        buttonClicked(continentButtonList[i][j])
+                        Log.d("UI", "touched: ${getButtonId(continentButtonList[i][j])}")
+                    }
                 }
             }
         }
@@ -483,9 +480,15 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         var newContinentList: ContinentList
         botFragment.botActonDone = false
 
-
         //reinforcement phase of bot
         GlobalScope.launch {
+
+            this@GameActivity.runOnUiThread {
+                botFragment.view!!.findViewById<ImageView>(R.id.phaseImageView)
+                    .setImageResource(R.drawable.phase_enemy_1)
+                botFragment.view!!.findViewById<TextView>(R.id.playerNameText).text =
+                    playerList[moveOfPlayer].name
+            }
 
             val reinforcementTroops = getTroopsForReinforcement(player)
             newBoard =
@@ -516,31 +519,75 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                     }
             Log.d("botPhase:", "Total troops: $botReinforcementTroopsTotal")
 
-
             //Attack phase of bot
+            this@GameActivity.runOnUiThread {
+                botFragment.view!!.findViewById<ImageView>(R.id.phaseImageView)
+                    .setImageResource(R.drawable.phase_enemy_2)
+            }
             newBoard = MinimalRisk.attack(getJsonForBot(), player)
             Log.d("botPhase, attack", newBoard)
 
-            continentList = JsonHandler.getContinentListFromJson(newBoard)
+            newContinentList = JsonHandler.getContinentListFromJson(newBoard)
 
-            for (continent in continentList.continents)
-                for (country in continent.countries)
-                    if (country.modified) {
-                        //Only the original thread that created a view hierarchy can touch its views.
-                        this@GameActivity.runOnUiThread {
-                            botFragment.addBotAction("$player conquered ${country.name}")
+            for ((i, continent) in newContinentList.continents.withIndex())
+                for ((j, country) in continent.countries.withIndex())
+                    when {
+                        (country.modified && continentList.continents[i].countries[j].player == playerList[moveOfPlayer].name) -> {
+                            this@GameActivity.runOnUiThread {
+                                botFragment.addBotAction("$player lost troops in ${country.name}")
+                            }
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(1000)
+                            continentList.continents[i].countries[j] = country
+                            updateButtons()
                         }
-                        changeButtonToBlack(getButtonById(country.name))
-                        delay(500)
-                        updateButtons()
-                        delay(2000)
+                        (country.modified && country.player == playerList[moveOfPlayer].name) -> {
+                            this@GameActivity.runOnUiThread {
+                                botFragment.addBotAction("$player attacked ${country.name}, you lost the battle")
+                            }
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(400)
+                            changeButtonToBlue(getButtonById(country.name))
+                            delay(400)
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(400)
+                            continentList.continents[i].countries[j] = country
+                            updateButtons()
+                        }
+
+                        (country.modified && country.player != playerList[moveOfPlayer].name) -> {
+                            this@GameActivity.runOnUiThread {
+                                botFragment.addBotAction("$player attacked ${country.name}, you won the battle!")
+                            }
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(400)
+                            changeButtonToBlue(getButtonById(country.name))
+                            delay(400)
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(400)
+                            continentList.continents[i].countries[j] = country
+                            updateButtons()
+                        }
+                        (country.modified && continentList.continents[i].countries[j].player == playerList[moveOfPlayer].name) -> {
+                            this@GameActivity.runOnUiThread {
+                                botFragment.addBotAction("$player lost troops in ${country.name}")
+                            }
+                            changeButtonToBlack(getButtonById(country.name))
+                            delay(1000)
+                            continentList.continents[i].countries[j] = country
+                            updateButtons()
+                        }
+
                     }
 
             isPlayerWinner("You lost!")
 
-
-
             //Relocation phase of bot
+            this@GameActivity.runOnUiThread {
+                botFragment.view!!.findViewById<ImageView>(R.id.phaseImageView)
+                    .setImageResource(R.drawable.phase_enemy_3)
+            }
+
             newBoard = MinimalRisk.moveTroops(getJsonForBot(), player)
             Log.d("botPhase, relocation", newBoard)
             newContinentList = JsonHandler.getContinentListFromJson(newBoard)
@@ -550,7 +597,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
             for ((i, continent) in continentList.continents.withIndex())
                 for ((j, country) in continent.countries.withIndex())
-                    if (country.modified) {
+                    if (newContinentList.continents[i].countries[j].modified) {
                         val troops =
                             newContinentList.continents[i].countries[j].count - country.count
                         if (troops < 0) {
@@ -559,14 +606,21 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                             toCountry = country.name
                             troopsMoved = troops
                         }
-                        this@GameActivity.runOnUiThread {
-                            botFragment.addBotAction("$player moved $troopsMoved troops from $fromCountry to $toCountry")
-                        }
-                        delay(1000)
-                        changeButtonToWhite(getButtonById(country.name))
-                        delay(500)
-                        updateButtons()
                     }
+
+            if (troopsMoved > 0) {
+                this@GameActivity.runOnUiThread {
+                    botFragment.addBotAction(" $troopsMoved troops  moved from $fromCountry to $toCountry")
+                }
+                continentList = newContinentList
+                delay(500)
+                changeButtonToWhite(getButtonById(fromCountry))
+                delay(500)
+                changeButtonToBlack(getButtonById(toCountry))
+                delay(500)
+                updateButtons()
+            }
+
         }
         botFragment.botActonDone = true
     }
@@ -617,13 +671,13 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         val width = 800
         val height = 200
         val focusable = false
-        val popupWindow = PopupWindow(EndPopUpView, width,height, focusable)
+        val popupWindow = PopupWindow(EndPopUpView, width, height, focusable)
 
         EndPopUpView.findViewById<TextView>(R.id.winner).text = winnerText
-        EndPopUpView.findViewById<Button>(R.id.okButtonEnd).setOnClickListener{
+        EndPopUpView.findViewById<Button>(R.id.okButtonEnd).setOnClickListener {
             finish()
         }
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0)
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
     }
 
 
@@ -813,8 +867,8 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         val width = 800
         val height = 800
         val focusable = false
-        attackPopupWindow = PopupWindow(popUpView, width, height, focusable)
-        attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        attackPopupWindow = PopupWindow(popUpView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, focusable)
+        attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, -20)
         return popUpView
     }
 
@@ -890,38 +944,39 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
      */
     override fun updateButtons() {
         buttonsLocked = true
-        for ((i, continent) in continentList.continents.withIndex())
-            for ((j, country) in continent.countries.withIndex()) {
-                when (country.player) {
-                    playerList[0].name -> changeButtonToBlue(continentButtonList[i][j])
-                    playerList[1].name -> changeButtonToRed(continentButtonList[i][j])
 
-                }
-                val button = continentButtonList[i][j]
-                var countChange =
-                    country.count.minus(button.text.toString().toInt())
+            for ((i, continent) in continentList.continents.withIndex())
+                for ((j, country) in continent.countries.withIndex()) {
+                    when (country.player) {
+                        playerList[0].name -> changeButtonToBlue(continentButtonList[i][j])
+                        playerList[1].name -> changeButtonToRed(continentButtonList[i][j])
 
-                when {
-
-                    countChange > 0 -> GlobalScope.launch {
-                        for (k in 1..countChange) {
-                            this@GameActivity.runOnUiThread { increaseTroops(button) }
-                            delay(200)
-                        }
                     }
+                    val button = continentButtonList[i][j]
+                    var countChange =
+                        country.count.minus(button.text.toString().toInt())
 
-                    countChange < 0 -> {
-                        countChange *= -1
-                        GlobalScope.launch {
-                            for (l in 1..countChange) {
-                                this@GameActivity.runOnUiThread { decreaseTroops(button) }
-                                delay(200)
+                    when {
+
+                        countChange > 0 -> GlobalScope.launch {
+                            for (k in 1..countChange) {
+                                this@GameActivity.runOnUiThread { increaseTroops(button) }
+                                delay(100)
+                            }
+                        }
+
+                        countChange < 0 -> {
+                            countChange *= -1
+                            GlobalScope.launch {
+                                for (l in 1..countChange) {
+                                    this@GameActivity.runOnUiThread { decreaseTroops(button) }
+                                    delay(100)
+                                }
                             }
                         }
                     }
                 }
-            }
-        buttonsLocked = false
+            buttonsLocked = false
     }
 
     /**

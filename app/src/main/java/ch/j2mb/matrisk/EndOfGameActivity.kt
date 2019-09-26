@@ -13,7 +13,7 @@ class EndOfGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_multiplayer)
+        setContentView(R.layout.activity_end_of_game)
 
         val popItup = findViewById<Button>(R.id.popUpButton)
 
