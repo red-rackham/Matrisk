@@ -374,7 +374,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                     source
                 )
 
-            Log.d("relocationCheck:", "MinmalRisk:${possibleTargetsJson}")
+            Log.d("relocationCheck:", "MinmalRisk:$possibleTargetsJson")
 
             val countryList = JsonHandler.getCountryListFromJson(possibleTargetsJson)
 
@@ -481,6 +481,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         val player = playerList[moveOfPlayer].name
         var newBoard: String
         var newContinentList: ContinentList
+        botFragment.botActonDone = false
 
 
         //reinforcement phase of bot
@@ -567,6 +568,7 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
                         updateButtons()
                     }
         }
+        botFragment.botActonDone = true
     }
 
     /**
@@ -605,24 +607,24 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
 
         if (winnerCount == 0) {
             showEndOfGamePopUp(findViewById(android.R.id.content), winnerText)
-
-        finish()
         }
     }
 
     private fun showEndOfGamePopUp(view: View, winnerText: String) {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popUpView = inflater.inflate(R.layout.end_of_game_layout, null)
+        val EndPopUpView = inflater.inflate(R.layout.end_of_game_layout, null)
 
         val width = 800
         val height = 200
         val focusable = false
-        val popupWindow = PopupWindow(popUpView, width,height, focusable)
-        popUpView.findViewById<TextView>(R.id.winner).text = winnerText
+        val popupWindow = PopupWindow(EndPopUpView, width,height, focusable)
 
+        EndPopUpView.findViewById<TextView>(R.id.winner).text = winnerText
+        EndPopUpView.findViewById<Button>(R.id.okButtonEnd).setOnClickListener{
+            finish()
+        }
         popupWindow.showAtLocation(view, Gravity.CENTER, 0,0)
     }
-
 
 
     /**

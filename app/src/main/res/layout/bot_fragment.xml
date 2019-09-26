@@ -81,6 +81,7 @@
             android:maxLines="7"
             android:minWidth="300dp"
             android:minLines="7"
+            android:gravity="bottom"
             android:scrollbarAlwaysDrawHorizontalTrack="false"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:scrollbarSize="8dp"
