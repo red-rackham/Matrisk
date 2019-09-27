@@ -2,23 +2,22 @@ package ch.j2mb.matrisk.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import ch.j2mb.matrisk.GameActivity
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
-import kotlinx.android.synthetic.main.attack_popup.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import ch.j2mb.matrisk.helper.GameActivityInterface
 
 const val NO_SELECTION: String = "<please select>"
 
+/**
+ * Reinforcement fragment is loaded in reinforcement phase. It handles all the user input during that phase
+ * and provides information about the game state and possible moves.
+ * It is loaded into the fragment container provided ba the GameActivity
+ */
 class ReinforcementFragment : Fragment() {
 
     private lateinit var listener: GameActivityInterface

@@ -1,12 +1,10 @@
-package ch.j2mb.matrisk.gameplay.helper.ai_machine;
+package ch.j2mb.matrisk.ai_machine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
-
-import ch.j2mb.matrisk.gameplay.helper.ai_machine.DirectedGraph;
 
 class Graph extends DirectedGraph {
 

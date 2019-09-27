@@ -9,9 +9,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
+import ch.j2mb.matrisk.helper.GameActivityInterface
 
-
+/**
+ * Bot fragment is loaded when the bot plays his turn. It provides information about the actions
+ * and moves of the bot. phase.
+ */
 class BotFragment : Fragment() {
 
     private lateinit var listener: GameActivityInterface

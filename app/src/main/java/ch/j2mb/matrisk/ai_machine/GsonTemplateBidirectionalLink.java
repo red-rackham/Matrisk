@@ -1,4 +1,4 @@
-package ch.j2mb.matrisk.gameplay.helper.ai_machine;
+package ch.j2mb.matrisk.ai_machine;
 
 /**
  * Template class for converting data from Java objects to JSON and back, using the <a href="https://github.com/google/gson">Gson</a> library.

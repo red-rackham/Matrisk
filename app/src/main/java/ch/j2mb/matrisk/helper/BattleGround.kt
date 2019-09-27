@@ -1,4 +1,4 @@
-package ch.j2mb.matrisk.gameplay.helper
+package ch.j2mb.matrisk.helper
 
 import android.app.Activity
 import android.content.Context
@@ -6,12 +6,26 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.model.Country
+import ch.j2mb.matrisk.model.Country
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random.Default.nextInt
 
+/**
+ * BattleGround handles all the logic needed for a battle when a player attacks another player.
+ *
+ * @property counterparties Attacking and defending country
+ * @property attackingTroops Amount of troops used by the attacker
+ * @property troopsLeft Amount of troops left in the attacking country during an attack
+ * @property context Context for callbacks to GameActivity
+ * @constructor
+ *
+ *
+ * @param fastAttack Boolean to know if the player want to do a normal attack (every round of the
+ * battle dice-throws are shown) or if he wants to have an attack in fast mode (dice-throws are
+ * not shown to the player, just the result of the attack).
+ */
 class BattleGround(
     private var counterparties: List<Country>,
     private var attackingTroops: Int,

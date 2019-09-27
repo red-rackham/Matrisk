@@ -1,10 +1,13 @@
-package ch.j2mb.matrisk.gameplay.helper
+package ch.j2mb.matrisk.helper
 
 import android.view.View
 import android.widget.Button
-import ch.j2mb.matrisk.gameplay.model.Country
+import ch.j2mb.matrisk.model.Country
 
-
+/**
+ * Interface for callbacks to GameActivity
+ *
+ */
 interface GameActivityInterface {
 
     fun getAttackFragment()

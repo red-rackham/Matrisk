@@ -15,18 +15,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import ch.j2mb.matrisk.fragments.*
-import ch.j2mb.matrisk.gameplay.helper.BattleGround
-import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
-import ch.j2mb.matrisk.gameplay.helper.GameInitializer
-import ch.j2mb.matrisk.gameplay.helper.JsonHandler
-import ch.j2mb.matrisk.gameplay.helper.ai_machine.BiDirectionalLinkList
-import ch.j2mb.matrisk.gameplay.helper.ai_machine.MinimalRisk
-import ch.j2mb.matrisk.gameplay.model.ContinentList
-import ch.j2mb.matrisk.gameplay.model.Country
-import ch.j2mb.matrisk.gameplay.model.Player
+import ch.j2mb.matrisk.helper.BattleGround
+import ch.j2mb.matrisk.helper.GameActivityInterface
+import ch.j2mb.matrisk.helper.GameInitializer
+import ch.j2mb.matrisk.helper.JsonHandler
+import ch.j2mb.matrisk.ai_machine.BiDirectionalLinkList
+import ch.j2mb.matrisk.ai_machine.MinimalRisk
+import ch.j2mb.matrisk.model.ContinentList
+import ch.j2mb.matrisk.model.Country
+import ch.j2mb.matrisk.model.Player
 import kotlinx.coroutines.*
 
-
+/**
+ * Controller of the Game. This is handling most of the user input and handles API calls
+ * to ch.j2mb.matrisk.gameplay.ai_machine and updates the view.
+ *
+ */
 class GameActivity : AppCompatActivity(), GameActivityInterface {
 
     private val fragmentManager: FragmentManager = supportFragmentManager
@@ -870,10 +874,12 @@ class GameActivity : AppCompatActivity(), GameActivityInterface {
         }
 
         //return the view
-        val width = 800
-        val height = 800
+        val width = 1400
+        val height = 1000
         val focusable = false
-        attackPopupWindow = PopupWindow(popUpView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, focusable)
+        attackPopupWindow = PopupWindow(popUpView, width, height, focusable)
+
+//        attackPopupWindow = PopupWindow(popUpView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, focusable)
         attackPopupWindow.showAtLocation(view, Gravity.CENTER, 0, -20)
         return popUpView
     }

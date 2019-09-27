@@ -1,14 +1,17 @@
-package ch.j2mb.matrisk.gameplay.helper
+package ch.j2mb.matrisk.helper
 
 import android.content.Context
 import android.util.Log
-import ch.j2mb.matrisk.gameplay.helper.ai_machine.*
-import ch.j2mb.matrisk.gameplay.model.ContinentList
-import ch.j2mb.matrisk.gameplay.model.CountryList
+import ch.j2mb.matrisk.ai_machine.*
+import ch.j2mb.matrisk.model.ContinentList
+import ch.j2mb.matrisk.model.CountryList
 import com.google.gson.Gson
 import java.io.InputStream
-import java.util.ArrayList
+import java.util.*
 
+/**
+ * Handler for JSON operations and the communication between GameActivity and MinimalRisk.
+ *  */
 object JsonHandler {
 
     fun getJsonFromFile(fileName: String, context: Context): String? {
@@ -24,12 +27,18 @@ object JsonHandler {
         return json
     }
 
+    /**
+     * Provides a new list of continents which can be used to update the game state
+     *
+     * @param jsonString JSON representing state of the game
+     * @return List of Continents
+     */
     fun getContinentListFromJson(jsonString: String): ContinentList {
         Log.d("JSON:", "getContinentListFromJson")
         Log.d("JSON:", jsonString)
 
         val gson = Gson()
-        var continentList = gson.fromJson(jsonString, ContinentList::class.java)?: ContinentList()
+        val continentList = gson.fromJson(jsonString, ContinentList::class.java) ?: ContinentList()
         continentList.continents.sortBy { it.name }
 
         //DEBUG
@@ -47,11 +56,24 @@ object JsonHandler {
         return continentList
     }
 
-    fun getCountryListFromJson(jsonString: String) : CountryList {
+    /**
+     * Get a list of countries. Mostly used to get possible target countries for an attack or
+     * relocation move.
+     *
+     * @param jsonString
+     * @return List of countries
+     */
+    fun getCountryListFromJson(jsonString: String): CountryList {
         val gson = Gson()
-        return gson.fromJson(jsonString, CountryList::class.java)?: CountryList()
+        return gson.fromJson(jsonString, CountryList::class.java) ?: CountryList()
     }
 
+    /**
+     * Bidirectional-Link List from JSON
+     *
+     * @param jsonString
+     * @return List of Bidirectional links
+     */
     fun getBidirectionalLinkfromJson(jsonString: String): BiDirectionalLinkList {
         val gson = Gson()
         Log.d("JSON:", "BiDirectionalLinkList from JSON")
@@ -62,11 +84,14 @@ object JsonHandler {
         return biDirectionalLinkList
     }
 
-    fun getJsonFromContinentList(continentList: ContinentList): String {
-        val gson = Gson()
-        return gson.toJson(continentList)
-    }
-
+    /**
+     * Converter of a list of continents and list of bidirectional links to produce a CountryGraph
+     * for MinimalRisk
+     *
+     * @param continentList
+     * @param bidirectionalLinks
+     * @return CountryGraph
+     */
     fun gsonTemplateConverter(
         continentList: ContinentList,
         bidirectionalLinks: ArrayList<GsonTemplateBidirectionalLink>
@@ -100,14 +125,30 @@ object JsonHandler {
         return gsonTemplateCountryGraph
     }
 
+    /**
+     * Used for communication with MinimalRisk. Produces a JSON string representing a CountryGraph
+     *
+     * @param continentList
+     * @param bidirectionalLinks
+     * @return JSON representing a CountryGraph
+     */
     fun getCountryGraphJson(
         continentList: ContinentList,
         bidirectionalLinks: ArrayList<GsonTemplateBidirectionalLink>
     ): String {
-        var jsonString = getJsonFromCountryGraph(gsonTemplateConverter(continentList, bidirectionalLinks))
+        val jsonString =
+            getJsonFromCountryGraph(gsonTemplateConverter(continentList, bidirectionalLinks))
         Log.d("getCountryGraphJson:", jsonString)
         return jsonString
     }
+
+    /**
+     *
+     * Used for communication with MinimalRisk. Produces a JSON string representing a CountryGraph
+
+     * @param countryGraphObject
+     * @return JSON string representing a CountryGraph
+     */
 
     fun getJsonFromCountryGraph(countryGraphObject: GsonTemplateCountryGraph): String {
         val gson = Gson()

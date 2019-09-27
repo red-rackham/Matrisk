@@ -9,9 +9,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.j2mb.matrisk.R
-import ch.j2mb.matrisk.gameplay.helper.GameActivityInterface
+import ch.j2mb.matrisk.helper.GameActivityInterface
 
-
+/**
+ * Relocation fragment is loaded in reinforcement phase. It handles all the user input during that phase
+ * and provides information about the game state and possible moves.
+ * It is loaded into the fragment container provided ba the GameActivity
+ */
 class RelocationFragment : Fragment() {
 
     private lateinit var listener: GameActivityInterface
