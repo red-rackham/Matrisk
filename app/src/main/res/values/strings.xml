@@ -37,4 +37,134 @@
     <string name="troops_left">Troops left:</string>
     <string name="move">Move!</string>
     <string name="player_name"><![CDATA[<player name>]]></string>
+
+
+
+    <string name="about_text">MatRisk:\n
+**************\n
+\n
+Der Spieler kämpft auf einer fiktiven Landkarte gegen einen Bot. Die Länder\n
+sind in Kontinente gruppiert, welche miteinander verbunden sind.\n
+\n
+\n
+Spielregeln\n
+***********\n
+\n
+Ziel des Spiels: Die Spieler müssen alle Länder auf einer Spielkarte erobern.\n
+\n
+Ablauf:\n
+
+1)	Initialisierung:\n
+	Zuerst werden die Länder auf der Karte zufällig auf die Spieler verteilt. Es\n
+	wird dabei darauf geachtet, dass die Länder gleichmässig verteilt werden.\n
+	Könnten nicht alle Länder gleichmässig auf die Spieler verteilt werden, so\n
+	wird der Rest (Anzahl Länder % Anzahl Spieler) zufällig verteilt.\n
+
+	Nach der Initialisierung wird abwechselnd gespielt. In dieser Version von\n
+	MatRisk beginnt der Benutzer der Applikation immer zuerst. (Bei einer\n
+	Erweiterung der Applikation mit einem Multiplayer-Modus, müsste die\n
+	Reihenfolge in der Initialisierungsphase zufällig erhoben werden und\n
+	benachteiligte Spieler mit zusätzlichen Truppen kompensiert werden).\n
+\n
+2)	Runden-basierte Hauptphase:\n
+	Ist ein Spieler an der Reihe so hat er drei Phasen zu durchspielen:\n
+\n
+	a) Verstärkung:\n
+		Hier erhält der Spieler basierend auf der Anzahl Länder und Kontinente\n
+		(wenn ein Spieler alle Länder eines Kontinents kontrolliert) Verstärkung\n
+		in Form von neuen Truppen. Diese Truppen kann er frei auf alle Länder\n
+		unter seiner Kontrolle verteilen. Die Verstärkung wird in dieser Version\n
+		wie folgt berechnet: Truppen = (Länder/2  + Kontinente*3)\n
+\n
+	b) Angriff:\n
+		Nach der Verstärkung kann der Spieler gegnerische Länder angreifen.\n
+		Dafür wählt er ein Ausgangsland unter seiner Kontrolle und ein\n
+		gegnerisches Zielland aus.\n
+		Es kann ein Ausgangsland nur auswählen, wenn er dort mehr als eine\n
+		Truppeneinheit dort stationiert hat, das Zielland seines Angriffs muss\n
+		direkt benachbart sein.\n
+\n
+		Danach wählt der Spieler die Anzahl Truppen aus, mit denen er einen\n
+		Angriff durchführen will. Er kann mit mindestens mit einer\n
+		Truppeneinheit und maximal mit der Anzahl Truppen minus 1, welche auf\n
+		dem Ausgangsland stationiert sind, angreifen. Dies weil er mindestens\n
+		eine Truppeneinheit zurücklassen muss.\n
+		Der Verteidiger im Zielland verteidigt immer mit der vollen Anzahl\n
+		Truppen in seinem Land.\n
+\n
+		Sind Angriffs- und Verteidigungsland sowie die Anzahl angreifender\n
+		Truppen festgelegt so wird ausgewürfelt.\n
+		Der Angreifer hat maximal drei Würfel zum kämpfen, wenn er drei oder\n
+		mehr Truppen im Angriff zur Verfügung hat. Ansonsten ist die Anzahl\n
+		Würfel Analog der Anzahl Truppen.\n
+		Der Verteidiger hat maximal zwei Würfel zum kämpfen, ansonsten wird die\n
+		Anzahl Würfel analog wie beim Angreifer berechnet.\n
+\n
+		Ist die Anzahl Würfel festgelegt, werden diese nun gerollt.\n
+		Danach werden die Ergebnisse Paarweise verglichen:\n
+\n
+		Höchster Würfel Angreifer 		---  Höchster Würfel Verteidiger\n
+		Zweit-höchster Würfel Angreifer	---  Zweit-höchster Würfel Verteidiger\n
+\n
+		(Das zweite Paar gibt es nur wenn Angreifer und Verteidiger mehr\n
+		als je ein Würfel bzw. eine Truppe haben)\n
+\n
+		Hat in einem Paar der Angreifer ein höheres Ergebnis als der\n
+		Verteidiger, so verliert der Verteidiger eine Truppe. Hat der\n
+		Verteidiger ein gleiches oder höheres Ergebnis als der Angreifer, so\n
+		verliert der Angreifer eine Truppe. Pro Wurf können somit maximal zwei\n
+		Truppen verloren werden. Es ist auch möglich, dass beide Seiten je eine\n
+		Truppe verlieren\n
+\n
+		Folgende drei Beispiele sollen dies verdeutlichen. Der Angreifer hat\n
+		jeweils 3 oder mehr Truppen, der Verteidiger 2 oder mehr Truppen.\n
+		Daher wird immer mit der maximalen Anzahl an Würfeln gespielt:\n
+\n
+		***************************************************** \n
+		*	A	:	V                                       * \n
+		*	---------                                      	* \n
+		*	5	|	4                                       * \n
+		*	4	|	3                                       * \n
+		*	1	|	-       --> V verliert 2 Truppen        * \n
+		*                                                   * \n
+		***************************************************** \n
+		*	A	:	V                                       * \n
+		*	---------                                       * \n
+		*	6	|	6                                       * \n
+		*	4	|	5                                       * \n
+		*	4	|	-       --> A verliert 2 Truppen        * \n
+		*                                                   * \n
+		***************************************************** \n
+		*	A	:	V                                       * \n
+		*	---------                                       * \n
+		*	4	|	3                                       * \n
+		*	2	|	3                                       * \n
+		*	1	|	-       --> A verliert 1 Truppe         * \n
+		*                       V verliert 1 Truppe         * \n
+		*                                                   * \n
+		***************************************************** \n
+\n
+		Der Angriff kann im normalen Modus jederzeit abgebrochen (->withdraw) werden.\n
+		Es gibt für den Benutzer auch die Möglichkeit im Schnelldurchlauf\n
+		(-> Fast Attack) anzugreifen. Dabei werden die einzelnen Würfel-\n
+		Ergebnisse dem Spieler nicht gezeigt und er kann dabei seinen Angriff\n
+		nicht abbrechen.\n
+\n
+		Pro Angriffsphase kann der Spieler so oft angreifen wie er will oder\n
+		auch keinen Angriff starten\n
+\n
+	c)Truppenverschiebung:\n
+		Die letzte Phase in einem Spielzug ist die Truppenverschiebung. Dabei\n
+		kann ein Spieler Truppen von einem Land in ein anderes Land verschieben.\n
+		Voraussetzung dafür ist, dass beide Länder sowie die Länder dazwischen\n
+		unter seiner Kontrolle sind. Ausgangs und Zielland der Verschiebung\n
+		müssen also entweder direkt benachbart oder indirekt durch Länder\n
+		verbunden sein.\n
+		In einem Spielzug kann ein Spieler maximal nur eine Truppenverschiebung\n
+		durchführen.\n
+\n
+	Gespielt wird abwechslungsweise bis jemand alle Länder auf der Karte unter\n
+	seine Kontrolle gebracht hat.\n
+
+    </string>
 </resources>
