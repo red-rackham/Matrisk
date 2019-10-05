@@ -70,6 +70,7 @@ class ReinforcementFragment : Fragment() {
         }
 
         listener.setTroopsForReinforcement()
+        updateTextViews()
         return fragmentView
     }
 
@@ -88,6 +89,7 @@ class ReinforcementFragment : Fragment() {
     
     fun updateTroopsAvailable(troops: Int) {
         troopsAvailable = troops
+        troopsLeft = troopsAvailable
         updateTextViews()
     }
 
