@@ -81,27 +81,27 @@ Ablauf:
 		Daher wird immer mit der maximalen Anzahl an Würfeln gespielt:
 
 		*****************************************************
-		*	A	:	V										*
-		*	---------										*
-		*	5	|	4										*
-		*	4	|	3										*
-		*	1	|	-		--> V verliert 2 Truppen		*
-		*													*
+		*	A   :   V				    *
+		*	---------				    *
+		*	5   |   4				    *
+		*	4   |   3				    *
+		*	1   |   -	--> V verliert 2 Truppen    *
+		*						    *
 		*****************************************************
-		*	A	:	V										*
-		*	---------										*
-		*	6	|	6										*
-		*	4	|	5										*
-		*	4	|	-		--> A verliert 2 Truppen		*
-		*													*
+		*	A   :   V				    *
+		*	---------				    *
+		*	6   |   6				    *
+		*	4   |   5				    *
+		*	4   |	-	--> A verliert 2 Truppen    *
+		*						    *
 		*****************************************************
-		*	A	:	V										*
-		*	---------										*
-		*	4	|	3										*
-		*	2	|	3										*
-		*	1	|	-		--> A verliert 1 Truppe			*
-		*						V verliert 1 Truppe			*
-		*													*
+		*	A   :	V				    *
+		*	---------				    *
+		*	4   |	3				    *
+		*	2   |	3				    *
+		*	1   |	-	--> A verliert 1 Truppe     *
+		*			    V verliert 1 Truppe	    *
+		*						    *
 		*****************************************************
 
 		Der Angriff kann im normalen Modus jederzeit abgebrochen (->withdraw) 			
@@ -133,7 +133,7 @@ Aufbau Applikation:
 Der Teil der Applikation, welcher sich um den Spielablauf und die Interaktion 
 mit dem Benutzer kümmert ist in Kotlin, die künstliche Intelligenz des Gegners 
 ist in Java geschrieben. Weitere Informationen zu Klassen sind jeweils in 
-den Kommentaren des Sourcecodes zu finden
+den Kommentaren des Sourcecodes zu finden. 
 
 
 Paket minimalrisk
@@ -174,23 +174,4 @@ Klassen, die die Datenstruktur definieren.
 Die Implementierung des Graphenmodells und der Suche eines kürzesten Pfads 
 (Breitensuche) orientieren sich an in einem Online-Kurs des MIT 
 (MITx - 6.00.2x) vorgestellten Beispielen in Python.
-
-
-Weiterer Inhalt des Zip-Archivs
-*******************************
-
-1) Folien Präsentation
-2) Quelltext des Android-Projekts
-3) javadoc-Dokumentation
-   a) Kotlin-Quelltext App
-   b) Java-Package minimalrisk (in minimalrisk_documentation.zip)
-4) Programme, die für Tests durch Simulation von kompletten Spielverläufen 
-   verwendet wurden:
-   a) MinimalRiskTestdriveStateful.java (in minimalrisk_documentation.zip)   
-   b) MinimalRiskTestdriveStateless.java (in minimalrisk_documentation.zip)
-5) Dateien mit Beispielen für JSON-Daten:   
-   a) country_graph_example.json (in minimalrisk_documentation.zip)   
-   b) country_list_example.json (in minimalrisk_documentation.zip)
-6) Python-Implementierung Graph und Breitensuche aus MITx - 6.00.2x 
-   zum Vergleich (in minimalrisk_documentation.zip)
 
